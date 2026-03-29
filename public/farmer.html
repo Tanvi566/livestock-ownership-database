@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Farmer Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+    <h2>👨‍🌾 Farmer Dashboard</h2>
+</div>
+
+<div class="main">
+
+    <!-- STATS + CHART -->
+    <div class="cards">
+
+        <div class="card glass">
+            <h3>Your Total Animals</h3>
+            <p id="totalAnimals">0</p>
+        </div>
+
+        <div class="card glass">
+            <h3>Distribution</h3>
+            <canvas id="farmerPie"></canvas>
+        </div>
+
+    </div>
+
+    <!-- ADD FORM (only works if farmer.js handles it) -->
+    <div class="glass">
+        <h3>Add Livestock</h3>
+
+        <form id="addForm">
+            <input id="animal" placeholder="Animal Type" required>
+            <input id="breed" placeholder="Breed" required>
+            <input id="age" placeholder="Age" required>
+            <button>Add</button>
+        </form>
+    </div>
+
+    <!-- TABLE -->
+    <div class="glass">
+        <h3>Your Livestock</h3>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Animal</th>
+                    <th>Breed</th>
+                    <th>Age</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody id="data"></tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- SCRIPT -->
+<script src="farmer.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,189 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial;
+}
+
+body {
+    display: flex;
+    background: linear-gradient(135deg,#1e293b,#0f172a);
+    color: white;
+}
+
+/* TOPBAR */
+.topbar {
+    position: fixed;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 20px;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 230px;
+    height: 100vh;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+    padding: 20px;
+    margin-top: 60px;
+    transition: 0.3s;
+}
+
+.sidebar li {
+    padding: 12px;
+    margin: 10px 0;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.sidebar li:hover {
+    background: rgba(255,255,255,0.1);
+    transform: translateX(6px);
+}
+
+/* MAIN */
+.main {
+    margin-left: 240px;
+    margin-top: 70px;
+    padding: 20px;
+    width: 100%;
+}
+
+/* CARDS */
+.cards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.card {
+    flex: 1;
+    min-width: 250px;
+    padding: 20px;
+    border-radius: 15px;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-10px) scale(1.02);
+}
+
+/* GLASS */
+.glass {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+/* BUTTON */
+button {
+    padding: 10px;
+    background: #3b82f6;
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.05);
+}
+
+/* TABLE */
+table {
+    width: 100%;
+    margin-top: 15px;
+}
+
+tr:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+/* MAP */
+#map {
+    height: 400px;
+    margin-top: 10px;
+    border-radius: 10px;
+}
+
+/* ANIMATION */
+.section {
+    animation: fadeUp 0.5s ease;
+}
+/* 🚨 CHART FIX (IMPORTANT) */
+canvas {
+    display: block;
+    width: 100% !important;
+    height: 300px !important;
+}
+
+.card canvas {
+    min-height: 300px;
+}
+@keyframes fadeUp {
+    from {opacity:0; transform:translateY(20px);}
+    to {opacity:1; transform:translateY(0);}
+}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+    .sidebar {
+        position: absolute;
+        left: -230px;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .main {
+        margin-left: 0;
+    }
+
+    .cards {
+        flex-direction: column;
+    }
+}
+/* ✨ Fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Apply to main sections */
+.main, .card, .glass {
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* 🔥 Hover effects */
+.card:hover, .glass:hover {
+    transform: translateY(-5px) scale(1.02);
+    transition: 0.3s;
+}
+
+/* ✨ Table animation */
+table tbody tr {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* 🔘 Button animation */
+button {
+    transition: 0.3s;
+}
+button:hover {
+    transform: scale(1.1);
+    background: #2563eb;
+}

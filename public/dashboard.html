@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Advanced Analytics Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+
+<div class="topbar">
+    <h2>📊 Advanced Livestock Analytics</h2>
+</div>
+
+<div class="main">
+
+<!-- CARDS -->
+<div class="cards">
+
+    <div class="card glass">
+        <h3>Total Livestock</h3>
+        <p id="totalLivestock">0</p>
+    </div>
+
+    <div class="card glass">
+        <h3>Animal Types</h3>
+        <canvas id="barChart"></canvas>
+    </div>
+
+    <div class="card glass">
+        <h3>Distribution</h3>
+        <canvas id="pieChart"></canvas>
+    </div>
+
+</div>
+
+<!-- LINE CHART (RESTORED) -->
+<div class="glass">
+    <h3>📈 Growth Trend</h3>
+    <canvas id="lineChart"></canvas>
+</div>
+
+<!-- MAP + STATE CHART (RESTORED) -->
+<div class="glass">
+    <h3>🇮🇳 State Analytics</h3>
+    <div id="map"></div>
+    <h4 id="stateTitle">Click a state</h4>
+    <canvas id="stateChart"></canvas>
+</div>
+
+</div>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
