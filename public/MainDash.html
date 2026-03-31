@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiveTrack | Official Farmer Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #166534;
+            --accent: #22c55e;
+            --bg: #f4f7f5;
+            --white: #ffffff;
+            --text-dark: #1a2e1a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg); color: var(--text-dark); overflow-x: hidden; }
+
+        /* --- NAVIGATION --- */
+        nav {
+            height: 70px;
+            background: var(--white);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+
+        /* --- LAYOUT --- */
+        .container {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 25px;
+            padding: 25px 5%;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* --- SIDEBAR --- */
+        .profile-sidebar {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 30px;
+            text-align: center;
+            height: fit-content;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+        }
+        .profile-img { width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--accent); margin-bottom: 15px; }
+
+        /* --- MAIN CONTENT --- */
+        .main-content { display: flex; flex-direction: column; gap: 25px; }
+.animal-count-box {
+            background: #f0fdf4;
+            border: 1px solid #dcfce7;
+            padding: 15px;
+            border-radius: 16px;
+            margin-top: 20px;
+        }
+        .search-row { display: flex; gap: 15px; }
+        .search-container {
+            flex: 1;
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+            border: 1px solid #e2e8f0;
+        }
+        .search-container input { border: none; outline: none; width: 100%; margin-left: 10px; font-size: 0.9rem; }
+        .filter-btn {
+            background: var(--white);
+            border: 1px solid #e2e8f0;
+            padding: 0 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center; gap: 10px; color: #64748b;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, #166534 0%, #064e3b 100%);
+            border-radius: 30px; padding: 40px; color: white; position: relative; overflow: hidden;
+        }
+
+        /* MAP SECTION */
+        .map-section {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.03);
+        }
+        .map-wrapper { width: 100%; max-width: 550px; margin: 20px auto; }
+        .india-state {
+            fill: #166534;
+            stroke: #fff;
+            stroke-width: 1.2;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .india-state:hover { fill: var(--accent) !important; transform: scale(1.01); transform-origin: center; }
+
+        /* FEATURE GRID */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+        .feature-card {
+            background: var(--white);
+            padding: 25px;
+            border-radius: 24px;
+            transition: 0.3s;
+            cursor: pointer;
+            text-align: center;
+        }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .feature-card i { font-size: 1.8rem; color: var(--primary); margin-bottom: 12px; display: block; }
+
+        /* CHATBOT */
+        .chat-fab {
+            position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
+            background: var(--primary); color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-size: 24px;
+            cursor: pointer; box-shadow: 0 10px 25px rgba(22, 101, 52, 0.4); z-index: 2000;
+        }
+        .chat-window {
+            position: fixed; bottom: 100px; right: 30px; width: 350px; height: 450px;
+            background: white; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            display: none; flex-direction: column; z-index: 2000; overflow: hidden;
+        }
+        .chat-header { background: var(--primary); color: white; padding: 15px; font-weight: 700; display: flex; justify-content: space-between; }
+        .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #f8fafc; display: flex; flex-direction: column; gap: 10px; }
+        .msg { padding: 10px; border-radius: 12px; font-size: 0.85rem; max-width: 80%; }
+        .bot { background: #e2e8f0; align-self: flex-start; }
+        .user { background: var(--accent); color: white; align-self: flex-end; }
+        .chat-footer { padding: 10px; border-top: 1px solid #eee; display: flex; }
+        .chat-footer input { flex: 1; border: 1px solid #ddd; padding: 8px 12px; border-radius: 20px; outline: none; }
+
+        #map-tooltip { position: absolute; background: #1e293b; color: white; padding: 10px; border-radius: 8px; display: none; z-index: 3000; pointer-events: none; font-size: 0.8rem; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo"><i class="fas fa-cow"></i> LiveTrack AI</div>
+        <button onclick="alert('Logging out...')" style="background:none; border:none; color:red; cursor:pointer; font-weight:bold;">Logout</button>
+    </nav>
+
+    <div id="map-tooltip"></div>
+
+    <div class="chat-fab" onclick="toggleChat()"><i class="fas fa-comment-dots"></i></div>
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header"><span>Assistant</span><i class="fas fa-times" onclick="toggleChat()" style="cursor:pointer;"></i></div>
+        <div class="chat-body" id="chatBody"><div class="msg bot">Ask me about your farm or national data.</div></div>
+        <div class="chat-footer"><input type="text" id="chatInput" placeholder="Type..." onkeypress="handleChat(event)"></div>
+    </div>
+
+    <div class="container">
+        <aside class="profile-sidebar">
+            <img src="https://ui-avatars.com/api/?name=Farmer+John&background=166534&color=fff" class="profile-img">
+            <h2>Farmer John Doe</h2>
+            <a href="FarmerDash.html" style="padding: 16px 32px; font-size: 1.1rem;">Access Profile</a>
+            <div style="text-align: left; margin-top: 25px; border-top: 1px solid #eee; padding-top: 20px;">
+                <div class="animal-count-box">
+                <span class="count-number" id="userAnimalCount">12</span>
+                <span class="count-label">Animals Registered</span>
+            </div>
+                <p>Farm ID: <b>#IN-9921</b></p>
+                <p>Location: <b>Punjab, India</b></p>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <div class="search-row">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="mapSearch" placeholder="Search State (e.g. Bihar, Odisha)...">
+                </div>
+                <button class="filter-btn"><i class="fas fa-sliders-h"></i> Filter</button>
+            </div>
+
+            <section class="hero-card">
+                <h1>National Census Portal</h1>
+                <p>View livestock density and registration status across all 28 states and 8 UTs.</p>
+            </section>
+
+            <section class="feature-grid">
+                <div class="feature-card">
+                    <i class="fas fa-plus-circle"></i>
+                    <h3>Registration</h3>
+                    <p style="font-size: 0.8rem; color: #64748b;">Enroll new cattle</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-heartbeat"></i>
+                    <h3>Health Logs</h3>
+                    <p style="font-size: 0.8rem; color: #64748b;">Track medical history</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <h3>Subsidies</h3>
+                    <p style="font-size: 0.8rem; color: #64748b;">View available grants</p>
+                </div>
+            </section>
+
+            <section class="map-section">
+                <h3>Live Livestock Density Map</h3>
+                <div class="map-wrapper">
+                    <svg viewBox="0 0 612 650" xmlns="http://www.w3.org/2000/svg">
+                        <path class="india-state" data-name="Jammu & Kashmir" data-val="2.1M" d="M190,40 L240,30 L260,80 L210,110 L170,80 Z" opacity="0.4"></path>
+                        <path class="india-state" data-name="Ladakh" data-val="0.5M" d="M241,30 L290,50 L280,100 L261,80 Z" opacity="0.3"></path>
+                        <path class="india-state" data-name="Himachal" data-val="1.2M" d="M210,110 L260,85 L280,120 L230,140 Z" opacity="0.5"></path>
+                        <path class="india-state" data-name="Punjab" data-val="5.4M" d="M180,140 L225,140 L230,180 L185,185 Z" opacity="0.6"></path>
+                        <path class="india-state" data-name="Haryana" data-val="4.1M" d="M225,145 L260,145 L265,190 L230,195 Z" opacity="0.55"></path>
+                        <path class="india-state" data-name="Uttarakhand" data-val="1.8M" d="M260,120 L300,140 L290,175 L260,165 Z" opacity="0.45"></path>
+                        <path class="india-state" data-name="Delhi" data-val="0.3M" d="M255,185 L265,185 L265,195 L255,195 Z" opacity="0.8"></path>
+
+                        <path class="india-state" data-name="Rajasthan" data-val="14.2M" d="M110,210 L190,180 L230,220 L190,290 L100,260 Z" opacity="0.85"></path>
+                        <path class="india-state" data-name="Gujarat" data-val="11.2M" d="M70,290 L130,290 L150,350 L90,370 L50,330 Z" opacity="0.75"></path>
+                        <path class="india-state" data-name="Madhya Pradesh" data-val="15.4M" d="M170,270 L270,260 L300,340 L210,360 L150,330 Z" opacity="0.8"></path>
+                        <path class="india-state" data-name="Maharashtra" data-val="18.9M" d="M140,360 L240,350 L270,430 L170,460 L120,410 Z" opacity="0.9"></path>
+                        <path class="india-state" data-name="Goa" data-val="0.2M" d="M165,465 L175,465 L175,475 L165,475 Z" opacity="0.3"></path>
+
+                        <path class="india-state" data-name="Uttar Pradesh" data-val="22.5M" d="M240,210 L330,200 L360,250 L310,290 L240,260 Z" opacity="1.0"></path>
+                        <path class="india-state" data-name="Bihar" data-val="12.1M" d="M340,240 L410,240 L415,290 L360,300 Z" opacity="0.78"></path>
+                        <path class="india-state" data-name="Jharkhand" data-val="8.4M" d="M350,300 L410,290 L420,340 L370,350 Z" opacity="0.65"></path>
+                        <path class="india-state" data-name="West Bengal" data-val="10.2M" d="M420,280 L450,280 L440,380 L410,350 Z" opacity="0.7"></path>
+                        <path class="india-state" data-name="Odisha" data-val="9.1M" d="M340,350 L410,345 L390,430 L320,400 Z" opacity="0.68"></path>
+                        <path class="india-state" data-name="Chhattisgarh" data-val="7.4M" d="M300,290 L350,300 L340,400 L280,390 Z" opacity="0.6"></path>
+
+                        <path class="india-state" data-name="Telangana" data-val="8.8M" d="M230,360 L310,360 L300,430 L240,420 Z" opacity="0.65"></path>
+                        <path class="india-state" data-name="Andhra Pradesh" data-val="11.5M" d="M240,430 L320,410 L310,510 L250,510 Z" opacity="0.75"></path>
+                        <path class="india-state" data-name="Karnataka" data-val="9.4M" d="M170,470 L230,460 L240,550 L190,570 L150,530 Z" opacity="0.68"></path>
+                        <path class="india-state" data-name="Kerala" data-val="3.2M" d="M190,570 L215,570 L200,640 L180,630 Z" opacity="0.45"></path>
+                        <path class="india-state" data-name="Tamil Nadu" data-val="8.2M" d="M220,560 L270,560 L260,640 L210,640 Z" opacity="0.62"></path>
+
+                        <path class="india-state" data-name="Sikkim" data-val="0.3M" d="M410,210 L430,210 L430,230 L410,230 Z" opacity="0.4"></path>
+                        <path class="india-state" data-name="Arunachal" data-val="1.1M" d="M500,180 L560,200 L550,230 L490,230 Z" opacity="0.35"></path>
+                        <path class="india-state" data-name="Assam" data-val="6.2M" d="M470,240 L530,240 L520,270 L460,270 Z" opacity="0.5"></path>
+                        <path class="india-state" data-name="Nagaland" data-val="0.6M" d="M535,240 L555,245 L550,270 L530,265 Z" opacity="0.3"></path>
+                        <path class="india-state" data-name="Manipur" data-val="0.7M" d="M530,275 L550,280 L545,305 L525,300 Z" opacity="0.32"></path>
+                        <path class="india-state" data-name="Mizoram" data-val="0.4M" d="M510,305 L530,310 L525,340 L505,335 Z" opacity="0.3"></path>
+                        <path class="india-state" data-name="Tripura" data-val="0.9M" d="M490,305 L505,305 L500,330 L485,330 Z" opacity="0.35"></path>
+                        <path class="india-state" data-name="Meghalaya" data-val="1.2M" d="M470,275 L510,275 L505,295 L465,295 Z" opacity="0.4"></path>
+                    </svg>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        function toggleChat() {
+            const win = document.getElementById('chatWindow');
+            win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function handleChat(e) {
+            if (e.key === 'Enter') {
+                const input = document.getElementById('chatInput');
+                const body = document.getElementById('chatBody');
+                if (!input.value.trim()) return;
+                body.innerHTML += `<div class="msg user">${input.value}</div>`;
+                setTimeout(() => {
+                    body.innerHTML += `<div class="msg bot">Processing your query about livestock census...</div>`;
+                    body.scrollTop = body.scrollHeight;
+                }, 600);
+                input.value = "";
+            }
+        }
+
+        const tooltip = document.getElementById('map-tooltip');
+        const states = document.querySelectorAll('.india-state');
+        states.forEach(state => {
+            state.addEventListener('mousemove', (e) => {
+                tooltip.style.display = 'block';
+                tooltip.innerHTML = `<strong>${state.dataset.name}</strong><br>Registered: ${state.dataset.val}`;
+                tooltip.style.left = e.pageX + 15 + 'px';
+                tooltip.style.top = e.pageY + 15 + 'px';
+            });
+            state.addEventListener('mouseleave', () => tooltip.style.display = 'none');
+        });
+
+        document.getElementById('mapSearch').addEventListener('input', function(e) {
+            const q = e.target.value.toLowerCase();
+            states.forEach(s => {
+                const name = s.dataset.name.toLowerCase();
+                if (q !== "" && name.includes(q)) {
+                    s.style.fill = "#22c55e"; s.style.stroke = "yellow"; s.style.strokeWidth = "3px";
+                } else {
+                    s.style.fill = "#166534"; s.style.stroke = "#fff"; s.style.strokeWidth = "1.2px";
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+```
