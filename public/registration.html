@@ -53,11 +53,41 @@
             #menu-btn, #close-sidebar { display: none !important; }
         }
 
-        #sidebar { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); z-index: 100; }
+        .flex { display: flex; }
+        .min-h-screen { min-height: 100vh; }
+        .flex-1 { flex: 1; }
+
+        /* Sidebar Styling */
+        #sidebar {
+            position: fixed;
+            width: 288px; /* w-72 */
+            height: 100vh;
+            background: white;
+            border-right: 1px solid var(--border-gray);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
+        }
+
         .sidebar-hidden { transform: translateX(-100%); }
         .sidebar-active { transform: translateX(0) !important; }
-        #sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); z-index: 90; }
-        #sidebar-overlay.active { display: block; }-- Navigation Styling --- */
+
+        /* Main Content Area */
+        main {
+            flex: 1;
+            width: 100%;
+            overflow-x: hidden;
+            padding-bottom: 5rem;
+        }
+
+        /* Responsive Sidebar Logic for Desktop */
+        @media (min-width: 1024px) {
+            main { margin-left: 0; } /* Set to 288px if you want it permanently open */
+            .sidebar-hidden { transform: translateX(-100%); }
+        }
+
         .logo { color: var(--primary-green); font-weight: 800; font-size: 1.5rem; margin-bottom: 40px; display: flex; align-items: center; gap: 12px; }
         nav { flex: 1; display: flex; flex-direction: column; gap: 8px; }
         .nav-link { 
@@ -96,6 +126,11 @@
             padding: 18px; border-radius: 16px; font-weight: 700; cursor: pointer; transition: 0.3s;
         }
         .btn-submit:hover { background: #15803d; transform: translateY(-2px); }
+         #sidebar-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); z-index: 90;
+        }
+        #sidebar-overlay.active { display: block; }
     </style>
 </head>
 <body>
@@ -103,17 +138,28 @@
     <div id="sidebar-overlay"></div>
 
     <div class="app-container">
-       <aside id="sidebar" class="sidebar-hidden fixed lg:fixed flex flex-col w-72 bg-white border-r border-gray-200 h-screen p-6">
-            <div class="flex items-center justify-between mb-10">
-                <div class="flex items-center gap-3 text-green-700 font-bold text-2xl"><i class="fas fa-microchip"></i> <span>LiveTrack</span></div>
-                <button id="close-sidebar" class="text-gray-400 hover:text-red-500 transition"><i class="fas fa-times text-xl"></i></button>
+       <aside id="sidebar" class="sidebar-hidden">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5rem;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; color: #15803d; font-weight: 700; font-size: 1.5rem;">
+                    <i class="fas fa-microchip"></i> <span>LiveTrack</span>
+                </div>
+                <button id="close-sidebar" style="background: none; border: none; color: #9ca3af; cursor: pointer;">
+                    <i class="fas fa-times style='font-size: 1.25rem;'"></i>
+                </button>
             </div>
-            <nav class="space-y-2 flex-1">
-                <a href="farmerDash.html" class="flex items-center gap-4 p-4 text-gray-500 hover:bg-green-50 hover:text-green-700 rounded-2xl transition"><i class="fas fa-chart-pie"></i> Overview</a>
-                <a href="livestock.html" class="flex items-center gap-4 p-4 text-gray-500 hover:bg-gray-50 rounded-2xl transition"><i class="fas fa-cow"></i> My Livestock</a>
-                <a href="health.html" class="flex items-center gap-4 p-4 text-gray-500 hover:bg-gray-50 rounded-2xl transition"><i class="fas fa-file-medical"></i> Health Records</a>
-                <a href="schemes.html" class="flex items-center gap-4 p-4 bg-green-50 text-green-700 rounded-2xl font-bold"><i class="fas fa-shield-alt"></i> Schemes</a>
+            
+            <nav style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem;">
+                <a href="farmerDash.html" class="nav-link"><i class="fas fa-chart-pie"></i> Overview</a>
+                <a href="livestock.html" class="nav-link"><i class="fas fa-cow"></i> My Livestock</a>
+                <a href="health.html" class="nav-link"><i class="fas fa-file-medical"></i> Health Records</a>
+                <a href="schemes.html" class="nav-link"><i class="fas fa-shield-alt"></i> Schemes</a>
             </nav>
+
+            <div style="padding: 1rem; background: #111827; border-radius: 1.5rem; color: white;">
+                <p style="font-size: 10px; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.1em;">Support</p>
+                <p style="font-size: 0.875rem; font-weight: 600; margin-top: 0.25rem;">Need help with registration?</p>
+                <button style="margin-top: 0.75rem; font-size: 0.75rem; background: var(--primary-green); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.75rem; width: 100%; cursor: pointer;">Contact Agent</button>
+            </div>
         </aside>
 
         <main>
@@ -158,7 +204,6 @@
         const overlay = document.getElementById('sidebar-overlay');
         const closeBtn = document.getElementById('close-sidebar');
 
-        // Logic matches your Schemes file exactly
         menuBtn.onclick = () => { 
             sidebar.classList.add('sidebar-active'); 
             overlay.classList.add('active'); 

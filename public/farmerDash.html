@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LiveTrack | Adaptive Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
 
@@ -152,7 +154,14 @@
             margin-bottom: 12px; 
             display: block; 
         }
+.feature-card {
+    /* ... your existing styles ... */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
+.feature-card:active {
+    transform: scale(0.95); /* Gives a "pressed" feel when clicked */
+}
         /* Quick Actions */
         .quick-actions-box {
             background: white;
@@ -320,35 +329,43 @@
                     </div>
 
                     <div class="quick-actions-box">
-                        <h3 style="font-weight: 700; margin-bottom: 1.5rem; font-size: 1.125rem;">Quick Actions</h3>
-                        <div class="action-btn" style="border: 1px solid #fed7aa66;">
-                            <i class="fas fa-file-chart-column" style="color: #ea580c;"></i>
-                            <span style="font-size: 0.875rem; font-weight: 700;">Export Report</span>
-                        </div>
-                        <div class="action-btn" style="border: 1px solid #bfdbfe66;">
-                            <i class="fas fa-syringe" style="color: #2563eb;"></i>
-                            <span style="font-size: 0.875rem; font-weight: 700;">Log Vaccination</span>
-                        </div>
-                    </div>
+    <h3 style="font-weight: 700; margin-bottom: 1.5rem; font-size: 1.125rem;">Quick Actions</h3>
+    
+    <div class="action-btn" onclick="downloadPDF()" style="border: 1px solid #fed7aa66;">
+    <i class="fas fa-file-chart-column" style="color: #ea580c;"></i>
+    <span style="font-size: 0.875rem; font-weight: 700;">Export Report</span>
+</div>
+
+    <div class="action-btn" onclick="window.location.href='vaccination.html'" style="border: 1px solid #bfdbfe66;">
+        <i class="fas fa-syringe" style="color: #2563eb;"></i>
+        <span style="font-size: 0.875rem; font-weight: 700;">Log Vaccination</span>
+    </div>
+</div>
                 </div>
             </div>
 
             <section class="feature-grid">
-                <div class="feature-card">
-                    <i class="fas fa-plus-circle"></i>
-                    <h3>Registration</h3>
-                    <p style="font-size: 0.8rem; color: #64748b;">Enroll new cattle</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-heartbeat"></i>
-                    <h3>Health Logs</h3>
-                    <p style="font-size: 0.8rem; color: #64748b;">Track medical history</p>
-                </div>
+                <a href="registration.html" style="text-decoration: none; color: inherit;">
+    <div class="feature-card">
+        <i class="fas fa-plus-circle"></i>
+        <h3>Registration</h3>
+        <p style="font-size: 0.8rem; color: #64748b;">Enroll new cattle</p>
+    </div>
+</a>
+                <a href="health.html" style="text-decoration: none; color: inherit;">
+                    <div class="feature-card">
+                        <i class="fas fa-heartbeat"></i>
+                        <h3>Health Logs</h3>
+                        <p style="font-size: 0.8rem; color: #64748b;">Track medical history</p>
+                    </div>
+                </a>
+                  <a href="schemes.html" style="text-decoration: none; color: inherit;">
                 <div class="feature-card">
                     <i class="fas fa-file-invoice-dollar"></i>
                     <h3>Subsidies</h3>
                     <p style="font-size: 0.8rem; color: #64748b;">View available grants</p>
                 </div>
+                </a>
             </section>
         </main>
     </div>
@@ -428,6 +445,50 @@
                     </table>`;
             }
         }
+        function downloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // 1. Add Branding/Header
+    doc.setFontSize(18);
+    doc.setTextColor(22, 163, 74); // Your primary green
+    doc.text("LiveTrack | Cattle Inventory Report", 14, 20);
+    
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 14, 28);
+    doc.text("Owner: Farmer Joe", 14, 33);
+
+    // 2. Format the data for the table
+    const tableColumn = ["Tag ID", "Breed Type", "Weight", "Status"];
+    const tableRows = [];
+
+    animalData.forEach(animal => {
+        const rowData = [
+            animal.id,
+            animal.breed,
+            animal.weight,
+            animal.status
+        ];
+        tableRows.push(rowData);
+    });
+
+    // 3. Generate the Table
+    doc.autoTable({
+        head: [tableColumn],
+        body: tableRows,
+        startY: 40,
+        theme: 'grid',
+        headStyles: { fillColor: [22, 163, 74] }, // Matching your green theme
+        styles: { font: 'helvetica', fontSize: 10 }
+    });
+
+    // 4. Trigger Download
+    doc.save(`LiveTrack_Inventory_${new Date().toLocaleDateString()}.pdf`);
+    
+    // Optional: Visual feedback
+    alert("Report generated successfully!");
+}
 
         window.addEventListener('resize', renderAdaptiveUI);
         renderAdaptiveUI();
