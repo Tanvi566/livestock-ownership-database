@@ -9,215 +9,204 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
         
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
 
-        /* Smooth Glass Transitions */
+        /* Glass Transitions */
         .glass-morph {
             background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
-        /* Hide Scrollbar but keep functionality */
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-        /* Animation for Page Load */
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* Sidebar Transition Logic */
+        #sidebar {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
         }
+        
+        /* Mobile & Desktop default: Hidden off-screen */
+        .sidebar-hidden {
+            transform: translateX(-100%);
+        }
+
+        /* When active: Slide in */
+        .sidebar-active {
+            transform: translateX(0) !important;
+        }
+
+        /* Backdrop Overlay */
+        #sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(4px);
+            z-index: 90;
+        }
+        #sidebar-overlay.active { display: block; }
+
+        /* General Styles */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
         .animate-load { animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 2fr)); gap: 20px; }
+        .feature-card { background: white; padding: 25px; border-radius: 24px; transition: 0.3s; cursor: pointer; text-align: center; }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        .feature-card i { font-size: 1.8rem; color: #16a34a; margin-bottom: 12px; display: block; }
+
+        #notification-dropdown { display: none; position: absolute; right: 0; top: 50px; width: 320px; z-index: 100; }
+        #notification-dropdown.active { display: block; }
+        .quick-actions-container { display: flex; flex-direction: column; height: 100%; min-height: 400px; }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-900 pb-20 lg:pb-0">
 
+    <div id="sidebar-overlay"></div>
+
     <div class="flex min-h-screen">
         
-        <aside class="hidden lg:flex flex-col w-72 bg-white border-r border-gray-200 sticky top-0 h-screen p-6">
-            <div class="flex items-center gap-3 text-green-700 font-bold text-2xl mb-10">
-                <i class="fas fa-microchip"></i> <span>LiveTrack</span>
+        <aside id="sidebar" class="sidebar-hidden fixed lg:fixed flex flex-col w-72 bg-white border-r border-gray-200 h-screen p-6">
+            <div class="flex items-center justify-between mb-10">
+                <div class="flex items-center gap-3 text-green-700 font-bold text-2xl">
+                    <i class="fas fa-microchip"></i> <span>LiveTrack</span>
+                </div>
+                <button id="close-sidebar" class="text-gray-400 hover:text-red-500 transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
             </div>
+            
             <nav class="space-y-2 flex-1">
-                <a href="#" class="flex items-center gap-4 p-4 bg-green-50 text-green-700 rounded-2xl font-bold">
+                <a href="farmerDash.html" class="flex items-center gap-4 p-4 bg-green-50 text-green-700 rounded-2xl font-bold">
                     <i class="fas fa-chart-pie"></i> Overview
                 </a>
-                <a href="#" class="flex items-center gap-4 p-4 text-gray-500 hover:bg-gray-50 rounded-2xl transition">
+                <a href="livestock.html" class="flex items-center gap-4 p-4 text-gray-500 hover:bg-gray-50 rounded-2xl transition">
                     <i class="fas fa-cow"></i> My Livestock
                 </a>
-                <a href="#" class="flex items-center gap-4 p-4 text-gray-500 hover:bg-gray-50 rounded-2xl transition">
+                <a href="healthrecord.html" class="flex items-center gap-4 p-4 text-gray-500 hover:bg-gray-50 rounded-2xl transition">
                     <i class="fas fa-file-medical"></i> Health Records
                 </a>
-                <a href="#" class="flex items-center gap-4 p-4 text-gray-500 hover:bg-gray-50 rounded-2xl transition">
+                <a href="myscheme.html" class="flex items-center gap-4 p-4 text-gray-500 hover:bg-gray-50 rounded-2xl transition">
                     <i class="fas fa-shield-alt"></i> Schemes
                 </a>
             </nav>
             <div class="p-4 bg-gray-900 rounded-3xl text-white">
                 <p class="text-[10px] opacity-60 uppercase tracking-widest">Support</p>
                 <p class="text-sm font-semibold mt-1">Need help with registration?</p>
-                <button class="mt-3 text-xs bg-green-600 px-4 py-2 rounded-xl">Contact Agent</button>
+                <button class="mt-3 text-xs bg-green-600 px-4 py-2 rounded-xl w-full">Contact Agent</button>
             </div>
         </aside>
 
         <main class="flex-1 w-full overflow-x-hidden">
             
-            <header class="glass-morph sticky top-0 z-30 px-6 py-4 flex justify-between items-center lg:bg-transparent lg:backdrop-blur-0 lg:border-none">
-                <div class="lg:hidden text-green-800 font-bold text-xl">LiveTrack</div>
-                <div class="hidden lg:block text-sm text-gray-400 font-medium">Dashboard / Overview</div>
-                
+            <header class="glass-morph sticky top-0 z-30 px-6 py-4 flex justify-between items-center">
                 <div class="flex items-center gap-4">
-                    <button class="relative p-2 text-gray-500"><i class="far fa-bell text-xl"></i><span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span></button>
-                    <img src="https://ui-avatars.com/api/?name=Farmer+Joe&background=16a34a&color=fff" class="w-10 h-10 rounded-full border border-gray-200">
+                    <button id="menu-btn" class="p-2 hover:bg-gray-100 rounded-full transition text-gray-600">
+                        <i class="fas fa-ellipsis-v text-xl"></i>
+                    </button>
+                    <div class="text-green-800 font-bold text-xl lg:text-sm lg:text-gray-400 lg:font-medium">LiveTrack <span class="hidden lg:inline">/ Overview</span></div>
+                </div>
+                
+                <div class="flex items-center gap-4 relative">
+                    <button id="bell-btn" class="relative p-2 text-gray-500">
+                        <i class="far fa-bell text-xl"></i>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+
+                    <div id="notification-dropdown">
+                        <div class="bg-green-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl">
+                            <h3 class="text-xl font-bold mb-2">Gov. Subsidies</h3>
+                            <p class="text-sm opacity-80 mb-6">You have 2 eligible schemes for cattle insurance.</p>
+                            <button class="w-full bg-white text-green-900 py-3 rounded-2xl font-bold text-sm">Apply Now</button>
+                            <i class="fas fa-award absolute -bottom-4 -right-4 text-8xl opacity-10"></i>
+                        </div>
+                    </div>
+
+                    <a href="MainDash.html" class="block shrink-0 transition hover:opacity-80">
+    <img src="https://ui-avatars.com/api/?name=Farmer+Joe&background=16a34a&color=fff" 
+         class="w-10 h-10 rounded-full border border-gray-200" 
+         alt="Profile">
+</a>
                 </div>
             </header>
 
             <div class="p-6 max-w-6xl mx-auto animate-load">
-                
                 <div class="mb-8">
                     <h1 class="text-2xl md:text-4xl font-bold tracking-tight">Hello, Farmer Joe 👋</h1>
                     <p class="text-gray-500 mt-1">Your farm status is <span class="text-green-600 font-bold">Stable</span> today.</p>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                    <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition cursor-pointer">
-                        <p class="text-xs font-bold text-gray-400 uppercase">Total Livestock</p>
-                        <h2 class="text-3xl font-bold mt-2">1,240</h2>
-                        <div class="mt-4 flex items-center gap-2 text-xs text-green-600 bg-green-50 w-fit px-2 py-1 rounded-lg">
-                            <i class="fas fa-caret-up"></i> 4.2% Growth
-                        </div>
-                    </div>
-                    <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition">
-                        <p class="text-xs font-bold text-gray-400 uppercase">Health Index</p>
-                        <h2 class="text-3xl font-bold mt-2 text-blue-600">98%</h2>
-                        <div class="mt-4 flex items-center gap-2 text-xs text-gray-400">Updated: 10m ago</div>
-                    </div>
-                    <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition">
-                        <p class="text-xs font-bold text-gray-400 uppercase">Pending Schemes</p>
-                        <h2 class="text-3xl font-bold mt-2 text-orange-500">03</h2>
-                        <div class="mt-4 flex items-center gap-2 text-xs text-orange-400">Review Required</div>
-                    </div>
-                    <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-md transition">
-                        <p class="text-xs font-bold text-gray-400 uppercase">Active Alerts</p>
-                        <h2 class="text-3xl font-bold mt-2 text-red-500">00</h2>
-                        <div class="mt-4 flex items-center gap-2 text-xs text-green-500 font-bold">System Normal</div>
-                    </div>
+                    <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm transition"><p class="text-xs font-bold text-gray-400 uppercase">Total Livestock</p><h2 class="text-3xl font-bold mt-2">1,240</h2></div>
+                    <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm"><p class="text-xs font-bold text-gray-400 uppercase">Health Index</p><h2 class="text-3xl font-bold mt-2 text-blue-600">98%</h2></div>
+                    <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm"><p class="text-xs font-bold text-gray-400 uppercase">Pending Schemes</p><h2 class="text-3xl font-bold mt-2 text-orange-500">03</h2></div>
+                    <div class="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm"><p class="text-xs font-bold text-gray-400 uppercase">Active Alerts</p><h2 class="text-3xl font-bold mt-2 text-red-500">00</h2></div>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    
                     <div class="lg:col-span-2 bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden">
-                        <div class="p-6 border-b border-gray-50 flex justify-between items-center">
-                            <h3 class="font-bold text-lg">Animal Inventory</h3>
-                            <button class="text-sm font-bold text-green-600">See All</button>
-                        </div>
-                        
-                        <div class="p-4 sm:p-6">
-                            <div id="responsive-list" class="space-y-4">
-                                </div>
-                        </div>
+                        <div class="p-6 border-b border-gray-50 flex justify-between items-center"><h3 class="font-bold text-lg">Animal Inventory</h3><button class="text-sm font-bold text-green-600">See All</button></div>
+                        <div class="p-4 sm:p-6"><div id="responsive-list" class="space-y-4"></div></div>
                     </div>
 
-                    <div class="space-y-6">
-                        <div class="bg-green-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden">
-                            <h3 class="text-xl font-bold mb-2">Gov. Subsidies</h3>
-                            <p class="text-sm opacity-80 mb-6">You have 2 eligible schemes for cattle insurance.</p>
-                            <button class="w-full bg-white text-green-900 py-3 rounded-2xl font-bold text-sm">Apply Now</button>
-                            <i class="fas fa-award absolute -bottom-4 -right-4 text-8xl opacity-10"></i>
-                        </div>
-
-                        <div class="bg-white rounded-[2.5rem] p-6 border border-gray-100 shadow-sm">
-                            <h3 class="font-bold mb-4">Quick Actions</h3>
-                            <div class="grid grid-cols-2 gap-3">
-                                <button class="p-4 bg-gray-50 rounded-2xl text-center hover:bg-green-50 transition">
-                                    <i class="fas fa-plus-circle text-green-600 text-xl block mb-2"></i>
-                                    <span class="text-xs font-bold">Register</span>
+                    <div class="quick-actions-container">
+                        <div class="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm flex-1 flex flex-col">
+                            <h3 class="font-bold mb-6 text-lg">Quick Actions</h3>
+                            <div class="flex-1 flex flex-col gap-4">
+                                <button class="flex-1 flex flex-col items-center justify-center bg-gray-50 rounded-[2rem] hover:bg-green-50 transition border border-transparent hover:border-green-100">
+                                    <i class="fas fa-plus-circle text-green-600 text-3xl mb-3"></i>
+                                    <span class="text-sm font-bold">Register Animal</span>
                                 </button>
-                                <button class="p-4 bg-gray-50 rounded-2xl text-center hover:bg-blue-50 transition">
-                                    <i class="fas fa-syringe text-blue-600 text-xl block mb-2"></i>
-                                    <span class="text-xs font-bold">Vaccine</span>
+                                <button class="flex-1 flex flex-col items-center justify-center bg-gray-50 rounded-[2rem] hover:bg-blue-50 transition border border-transparent hover:border-blue-100">
+                                    <i class="fas fa-syringe text-blue-600 text-3xl mb-3"></i>
+                                    <span class="text-sm font-bold">Log Vaccination</span>
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <section class="feature-grid p-6 max-w-6xl mx-auto">
+                <div class="feature-card"><a href="registration.html" style="text-decoration:none; color:inherit;"><i class="fas fa-plus-circle"></i><h3>Registration</h3><p style="font-size: 0.8rem; color: #64748b;">Enroll new cattle</p></a></div>
+                <div class="feature-card"><a href="healthrecord.html" style="text-decoration:none; color:inherit;"><i class="fas fa-heartbeat"></i><h3>Health Logs</h3><p style="font-size: 0.8rem; color: #64748b;">Track medical history</p></a></div>
+                <div class="feature-card"><a href="myscheme.html" style="text-decoration:none; color:inherit;"><i class="fas fa-file-invoice-dollar"></i><h3>Subsidies</h3><p style="font-size: 0.8rem; color: #64748b;">View available grants</p></a></div>
+            </section>
         </main>
     </div>
 
-    <nav class="lg:hidden fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 px-6 py-3 flex justify-between items-center z-50">
-        <a href="#" class="text-green-700 flex flex-col items-center gap-1">
-            <i class="fas fa-home text-lg"></i>
-            <span class="text-[10px] font-bold">Home</span>
-        </a>
-        <a href="#" class="text-gray-400 flex flex-col items-center gap-1">
-            <i class="fas fa-cow text-lg"></i>
-            <span class="text-[10px] font-bold">Livestock</span>
-        </a>
-        <div class="bg-green-600 w-12 h-12 rounded-full flex items-center justify-center text-white -mt-10 shadow-lg border-4 border-white">
-            <i class="fas fa-plus"></i>
-        </div>
-        <a href="#" class="text-gray-400 flex flex-col items-center gap-1">
-            <i class="fas fa-clipboard-list text-lg"></i>
-            <span class="text-[10px] font-bold">Reports</span>
-        </a>
-        <a href="#" class="text-gray-400 flex flex-col items-center gap-1">
-            <i class="fas fa-user text-lg"></i>
-            <span class="text-[10px] font-bold">Profile</span>
-        </a>
-    </nav>
-
     <script>
-        const animalData = [
-            { id: "A-901", breed: "Angus", weight: "520kg", status: "Healthy" },
-            { id: "G-402", breed: "Alpine", weight: "45kg", status: "Due Vaccine" },
-            { id: "A-772", breed: "Jersey", weight: "480kg", status: "Healthy" }
-        ];
+        // Data
+        const animalData = [{ id: "A-901", breed: "Angus", weight: "520kg", status: "Healthy" }, { id: "G-402", breed: "Alpine", weight: "45kg", status: "Due Vaccine" }, { id: "A-772", breed: "Jersey", weight: "480kg", status: "Healthy" }];
 
+        // Sidebar Toggle Logic
+        const menuBtn = document.getElementById('menu-btn');
+        const closeBtn = document.getElementById('close-sidebar');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('sidebar-active');
+            overlay.classList.toggle('active');
+        }
+
+        menuBtn.addEventListener('click', toggleSidebar);
+        closeBtn.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        // Notifications
+        const bellBtn = document.getElementById('bell-btn');
+        const dropdown = document.getElementById('notification-dropdown');
+        bellBtn.addEventListener('click', (e) => { e.stopPropagation(); dropdown.classList.toggle('active'); });
+        document.addEventListener('click', () => { dropdown.classList.remove('active'); });
+
+        // Table Render
         function renderAdaptiveUI() {
             const container = document.getElementById('responsive-list');
-            
             if (window.innerWidth < 640) {
-                // MOBILE VIEW: Simple Cards
-                container.innerHTML = animalData.map(item => `
-                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-green-600 border border-gray-100">
-                                <i class="fas fa-tag text-xs"></i>
-                            </div>
-                            <div>
-                                <p class="font-bold text-sm">${item.id}</p>
-                                <p class="text-[10px] text-gray-400 font-bold uppercase">${item.breed}</p>
-                            </div>
-                        </div>
-                        <span class="text-[10px] font-bold px-2 py-1 rounded-md ${item.status === 'Healthy' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}">${item.status}</span>
-                    </div>
-                `).join('');
+                container.innerHTML = animalData.map(item => `<div class="flex items-center justify-between p-4 bg-gray-50 rounded-2xl"><div class="flex items-center gap-4"><div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-green-600 border border-gray-100"><i class="fas fa-tag text-xs"></i></div><div><p class="font-bold text-sm">${item.id}</p><p class="text-[10px] text-gray-400 font-bold uppercase">${item.breed}</p></div></div><span class="text-[10px] font-bold px-2 py-1 rounded-md ${item.status === 'Healthy' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}">${item.status}</span></div>`).join('');
             } else {
-                // TABLET/DESKTOP VIEW: Full Table
-                container.innerHTML = `
-                    <table class="w-full text-left">
-                        <thead class="text-xs text-gray-400 font-bold uppercase tracking-widest border-b border-gray-50">
-                            <tr>
-                                <th class="pb-4">Tag ID</th>
-                                <th class="pb-4">Breed Type</th>
-                                <th class="pb-4">Weight</th>
-                                <th class="pb-4 text-right">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-50">
-                            ${animalData.map(item => `
-                                <tr>
-                                    <td class="py-4 font-bold text-gray-800">${item.id}</td>
-                                    <td class="py-4 text-sm text-gray-500">${item.breed}</td>
-                                    <td class="py-4 text-sm text-gray-500">${item.weight}</td>
-                                    <td class="py-4 text-right">
-                                        <span class="px-3 py-1 rounded-full text-xs font-bold ${item.status === 'Healthy' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}">${item.status}</span>
-                                    </td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                `;
+                container.innerHTML = `<table class="w-full text-left"><thead class="text-xs text-gray-400 font-bold uppercase tracking-widest border-b border-gray-50"><tr><th class="pb-4">Tag ID</th><th class="pb-4">Breed Type</th><th class="pb-4">Weight</th><th class="pb-4 text-right">Status</th></tr></thead><tbody class="divide-y divide-gray-50">${animalData.map(item => `<tr><td class="py-4 font-bold text-gray-800">${item.id}</td><td class="py-4 text-sm text-gray-500">${item.breed}</td><td class="py-4 text-sm text-gray-500">${item.weight}</td><td class="py-4 text-right"><span class="px-3 py-1 rounded-full text-xs font-bold ${item.status === 'Healthy' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}">${item.status}</span></td></tr>`).join('')}</tbody></table>`;
             }
         }
 
