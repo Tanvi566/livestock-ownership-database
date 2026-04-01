@@ -126,7 +126,34 @@
         }
         .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         .feature-card i { font-size: 1.8rem; color: var(--primary); margin-bottom: 12px; display: block; }
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+    padding: 1.5rem;
+    max-width: 1152px;
+    margin: 0 auto;
+}
 
+.feature-card {
+    background: white;
+    padding: 1.25rem;
+    border-radius: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+    border-color: var(--primary-green) !important;
+}
+
+/* Specific styling for the badges inside these smaller cards */
+.badge {
+    font-size: 0.65rem !important;
+    padding: 2px 8px !important;
+}
         /* CHATBOT */
         .chat-fab {
             position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
@@ -202,31 +229,55 @@
             </section>
 
             <section class="feature-grid">
-                <div class="feature-card">
-                    <a class="a"style="text-decoration: none;color:rgb(28, 27, 27)"href="registration.html" onmouseover="this.style.textDecoration='underline'; this.style.color='#1e293b'"
-   onmouseout="this.style.textDecoration='none'; this.style.color='#064e3b'">
-                    <i class="fas fa-plus-circle"></i>
-                    <h3>Registration</h3>
-                    <p style="font-size: 0.8rem; color: #64748b;">Enroll new cattle</p>
-                    </a>
-                </div>
-                <div class="feature-card">
-                     <a class="a"style="text-decoration: none;color:rgb(28, 27, 27)"href="health.html" onmouseover="this.style.textDecoration='underline'; this.style.color='#1e293b'"
-   onmouseout="this.style.textDecoration='none'; this.style.color='#064e3b'">
-                    <i class="fas fa-heartbeat"></i>
-                    <h3>Health Logs</h3>
-                    <p style="font-size: 0.8rem; color: #64748b;">Track medical history</p>
-                    </a>
-                </div>
-                <div class="feature-card">
-                    <a class="a"style="text-decoration: none;color:rgb(28, 27, 27)"href="schemes.html" onmouseover="this.style.textDecoration='underline'; this.style.color='#1e293b'"
-   onmouseout="this.style.textDecoration='none'; this.style.color='#064e3b'">
-                    <i class="fas fa-file-invoice-dollar"></i>
-                    <h3>Subsidies</h3>
-                    <p style="font-size: 0.8rem; color: #64748b;">View available grants</p>
-                    </a>
-                </div>
-            </section>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; grid-column: 1 / -1;">
+        <h2 style="font-weight: 800; color: #064e3b; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-cow"></i> Top Livestock Schemes
+        </h2>
+    </div>
+
+    <div class="feature-card" onclick="window.location.href='gvtSchemes.html'" style="text-align: left; border: 1px solid #e5e7eb;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <i class="fas fa-rocket" style="color: #ea580c; font-size: 1.2rem; margin: 0;"></i>
+            <span class="badge badge-green">50-65% Subsidy</span>
+        </div>
+        <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">National Livestock Mission</h3>
+        <p style="font-size: 0.75rem; color: #64748b; line-height: 1.4;">The "Startup India" for farmers. Funding up to ₹50 Lakh for goat, poultry, and more.</p>
+    </div>
+
+    <div class="feature-card" onclick="window.location.href='gvtSchemes.html'" style="text-align: left; border: 1px solid #e5e7eb;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <i class="fas fa-dna" style="color: #2563eb; font-size: 1.2rem; margin: 0;"></i>
+            <span class="badge badge-green">Breed Growth</span>
+        </div>
+        <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">Rashtriya Gokul Mission</h3>
+        <p style="font-size: 0.75rem; color: #64748b; line-height: 1.4;">Focus on milk production and indigenous breeds. Better cows = more money.</p>
+    </div>
+
+    <div class="feature-card" onclick="window.location.href='gvtSchemes.html'" style="text-align: left; border: 1px solid #e5e7eb;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <i class="fas fa-industry" style="color: #7c3aed; font-size: 1.2rem; margin: 0;"></i>
+            <span class="badge badge-orange">Loan Support</span>
+        </div>
+        <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">Infrastructure Fund (AHIDF)</h3>
+        <p style="font-size: 0.75rem; color: #64748b; line-height: 1.4;">Subsidized loans for milk processing and cold storage. Think big-business mode.</p>
+    </div>
+
+    <div class="feature-card" onclick="window.location.href='gvtSchemes.html'" style="text-align: left; border: 1px solid #e5e7eb;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <i class="fas fa-shield-virus" style="color: #16a34a; font-size: 1.2rem; margin: 0;"></i>
+            <span class="badge badge-green">Free Medical</span>
+        </div>
+        <h3 style="font-size: 1rem; margin-bottom: 0.5rem;">Disease Control (LHDCP)</h3>
+        <p style="font-size: 0.75rem; color: #64748b; line-height: 1.4;">Free vaccinations and disease programs. Keeps your 1,240 animals healthy.</p>
+    </div>
+
+    <a href="gvtSchemes.html" style="text-decoration: none; color: inherit; grid-column: 1 / -1;">
+        <div class="feature-card" style="display: flex; align-items: center; justify-content: center; gap: 12px; background: #f0fdf4; border: 2px dashed #16a34a; padding: 1.5rem;">
+            <i class="fas fa-arrow-right-long" style="color: #16a34a; font-size: 1.2rem; margin: 0;"></i>
+            <span style="font-weight: 800; color: #15803d; font-size: 1rem;">View All 15+ Government Schemes</span>
+        </div>
+    </a>
+</section>
 
             <section class="map-section">
                 <h3>Live Livestock Density Map</h3>
@@ -316,6 +367,48 @@
                 }
             });
         });
+        const botKnowledge = {
+    "subsidy": "Ah, looking for the government's help? The National Livestock Mission is your best bet! It covers up to 50% of costs for goats and poultry. Check the Schemes section for the link!",
+    "vaccination": "Keeping them healthy is key! The LHDCP provides free vaccinations for FMD. Have you checked your local vet schedule lately?",
+    "loan": "If you're thinking big, the AHIDF offers subsidized loans for infrastructure. Perfect for setting up that milk chilling unit you've been dreaming of!",
+    "cow": "Cows are the backbone of the farm! Under the Rashtriya Gokul Mission, you can get help with breed improvement. Better breeds = more milk!",
+    "dung": "Did you know in Chhattisgarh they actually buy cow dung? It's called the Godhan Nyay Yojana. Turning waste into wealth—literally!",
+    "hi": "Hello there, Farmer! I'm your LiveTrack assistant. I can help you with census data, government schemes, or just talk about animal health. What's on your mind today?",
+    "hello": "Hello! Ready to grow your farm today? Ask me about subsidies or animal registration!"
+};
+
+function handleChat(e) {
+    if (e.key === 'Enter') {
+        const input = document.getElementById('chatInput');
+        const body = document.getElementById('chatBody');
+        const userMsg = input.value.trim().toLowerCase();
+
+        if (!userMsg) return;
+
+        // Add User Message
+        body.innerHTML += `<div class="msg user">${input.value}</div>`;
+        input.value = "";
+        
+        // Auto-scroll
+        body.scrollTop = body.scrollHeight;
+
+        // Artificial "Thinking" Delay
+        setTimeout(() => {
+            let response = "That's an interesting point! While I'm still learning the specifics of that, I can definitely tell you more about National Livestock Schemes or how to register your 12 animals. Want to try a keyword like 'subsidy' or 'vaccine'?";
+
+            // Keyword Matching Logic
+            for (let key in botKnowledge) {
+                if (userMsg.includes(key)) {
+                    response = botKnowledge[key];
+                    break;
+                }
+            }
+
+            body.innerHTML += `<div class="msg bot">${response}</div>`;
+            body.scrollTop = body.scrollHeight;
+        }, 800);
+    }
+}
     </script>
 </body>
 </html>
