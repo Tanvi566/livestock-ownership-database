@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiveTrack | My Livestock</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
+        
+        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
+
+        .glass-morph {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        /* Sidebar Transition */
+        #sidebar {
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
+        }
+        
+        .sidebar-hidden { transform: translateX(-100%); }
+        .sidebar-active { transform: translateX(0) !important; }
+
+        #sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(4px);
+            z-index: 90;
+        }
+        #sidebar-overlay.active { display: block; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-load { animation: slideUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; }
+
+        #notification-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 50px;
+            width: 320px;
+            z-index: 100;
+        }
+        #notification-dropdown.active { display: block; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-900 pb-20 lg:pb-0">
+
+    <div id="sidebar-overlay"></div>
+
+    <div class="flex min-h-screen">
+        
+        <aside id="sidebar" class="sidebar-hidden fixed lg:fixed flex flex-col w-72 bg-white border-r border-gray-200 h-screen p-6">
+            <div class="flex items-center justify-between mb-10">
+                <div class="flex items-center gap-3 text-green-700 font-bold text-2xl">
+                    <i class="fas fa-microchip"></i> <span>LiveTrack</span>
+                </div>
+                <button id="close-sidebar" class="text-gray-400 hover:text-red-500 transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <nav class="space-y-2 flex-1">
+                <a href="maindash.html" class="flex items-center gap-4 p-4 text-gray-500 hover:bg-green-50 hover:text-green-700 rounded-2xl transition">
+                    <i class="fas fa-chart-pie"></i> Overview
+                </a>
+                <a href="livestock.html" class="flex items-center gap-4 p-4 bg-green-50 text-green-700 rounded-2xl font-bold">
+                    <i class="fas fa-cow"></i> My Livestock
+                </a>
+                <a href="health.html" class="flex items-center gap-4 p-4 text-gray-500 hover:bg-gray-50 rounded-2xl transition">
+                    <i class="fas fa-file-medical"></i> Health Records
+                </a>
+                <a href="schemes.html" class="flex items-center gap-4 p-4 text-gray-500 hover:bg-gray-50 rounded-2xl transition">
+                    <i class="fas fa-shield-alt"></i> Schemes
+                </a>
+            </nav>
+            <div class="p-4 bg-gray-900 rounded-3xl text-white">
+                <p class="text-[10px] opacity-60 uppercase tracking-widest">Support</p>
+                <p class="text-sm font-semibold mt-1">Need help with sensors?</p>
+                <button class="mt-3 text-xs bg-green-600 px-4 py-2 rounded-xl w-full">Contact Agent</button>
+            </div>
+        </aside>
+
+        <main class="flex-1 w-full overflow-x-hidden">
+            
+            <header class="glass-morph sticky top-0 z-30 px-6 py-4 flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <button id="menu-btn" class="p-2 hover:bg-gray-100 rounded-full transition text-gray-600">
+                        <i class="fas fa-ellipsis-v text-xl"></i>
+                    </button>
+                    <div class="text-green-800 font-bold text-xl">Livestock Dashboard</div>
+                </div>
+                
+                <div class="flex items-center gap-4 relative">
+                    <button id="bell-btn" class="relative p-2 text-gray-500">
+                        <i class="far fa-bell text-xl"></i>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+
+                    <div id="notification-dropdown">
+                        <div class="bg-green-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl">
+                            <h3 class="text-xl font-bold mb-2">Gov. Subsidies</h3>
+                            <p class="text-sm opacity-80 mb-6">2 new eligible schemes for your herd size.</p>
+                            <button class="w-full bg-white text-green-900 py-3 rounded-2xl font-bold text-sm">Apply Now</button>
+                            <i class="fas fa-award absolute -bottom-4 -right-4 text-8xl opacity-10"></i>
+                        </div>
+                    </div>
+
+                    <a href="maindash.html" class="block shrink-0 transition hover:opacity-80">
+                        <img src="https://ui-avatars.com/api/?name=Farmer+Joe&background=16a34a&color=fff" class="w-10 h-10 rounded-full border border-gray-200">
+                    </a>
+                </div>
+            </header>
+
+            <div class="p-6 max-w-6xl mx-auto animate-load">
+                
+                <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                    <div>
+                        <h1 class="text-3xl font-bold tracking-tight text-gray-800">My Livestock</h1>
+                        <p class="text-gray-500 mt-1">Detailed distribution and real-time health data.</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button class="bg-white border border-gray-200 text-gray-700 px-5 py-2.5 rounded-2xl font-bold text-sm hover:bg-gray-50 transition">
+                            <i class="fas fa-download mr-2"></i> Report
+                        </button>
+                        <button class="bg-green-600 text-white px-5 py-2.5 rounded-2xl font-bold text-sm shadow-lg shadow-green-100 hover:bg-green-700 transition">
+                            + Add Animal
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                    
+                    <div class="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm flex flex-col">
+                        <h3 class="font-bold mb-6 text-lg text-gray-700">Herd Composition</h3>
+                        <div class="relative h-48 flex-1">
+                            <canvas id="herdChart"></canvas>
+                        </div>
+                        <div class="mt-6 flex justify-between text-[11px] font-bold text-gray-400 uppercase tracking-widest">
+                            <span class="flex items-center gap-1"><i class="fas fa-circle text-green-600"></i> Cows</span>
+                            <span class="flex items-center gap-1"><i class="fas fa-circle text-blue-600"></i> Goats</span>
+                            <span class="flex items-center gap-1"><i class="fas fa-circle text-orange-500"></i> Sheep</span>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-2 bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm flex flex-col">
+                        <div class="flex justify-between items-center mb-8">
+                            <h3 class="font-bold text-lg text-gray-700">Live Vital Feed</h3>
+                            <span class="flex items-center gap-2 text-[10px] text-green-500 font-bold bg-green-50 px-3 py-1 rounded-full animate-pulse">
+                                <i class="fas fa-circle text-[6px]"></i> SENSORS ACTIVE
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 flex-1">
+                            <div class="p-6 bg-gray-50 rounded-[2rem] border border-gray-100 flex flex-col justify-center">
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Avg. Temperature</p>
+                                <h4 class="text-3xl font-bold text-gray-800 mt-2">101.4°F</h4>
+                                <p class="text-[10px] text-green-600 font-bold mt-1">Healthy Range</p>
+                            </div>
+                            <div class="p-6 bg-gray-50 rounded-[2rem] border border-gray-100 flex flex-col justify-center">
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Hydration Status</p>
+                                <h4 class="text-3xl font-bold text-gray-800 mt-2">92%</h4>
+                                <p class="text-[10px] text-blue-600 font-bold mt-1">Stable</p>
+                            </div>
+                            <div class="p-6 bg-gray-50 rounded-[2rem] border border-gray-100 flex flex-col justify-center">
+                                <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Activity Level</p>
+                                <h4 class="text-3xl font-bold text-orange-600 mt-2">88%</h4>
+                                <p class="text-[10px] text-gray-400 font-bold mt-1">High Mobility</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-sm">
+                    <div class="p-6 border-b border-gray-50 flex justify-between items-center">
+                        <h3 class="font-bold text-lg text-gray-800">Animal Registry</h3>
+                        <div class="flex gap-2">
+                            <input type="text" placeholder="Search Tag ID..." class="text-xs border border-gray-100 bg-gray-50 px-4 py-2 rounded-xl focus:outline-none focus:border-green-200">
+                        </div>
+                    </div>
+                    <div class="p-6 overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead class="text-xs text-gray-400 font-bold uppercase tracking-widest border-b border-gray-50">
+                                <tr>
+                                    <th class="pb-4">Tag ID</th>
+                                    <th class="pb-4">Breed</th>
+                                    <th class="pb-4">Weight</th>
+                                    <th class="pb-4">Last Checkup</th>
+                                    <th class="pb-4 text-right">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-50">
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="py-5 font-bold text-gray-700">A-901</td>
+                                    <td class="py-5 text-sm text-gray-500">Angus Cow</td>
+                                    <td class="py-5 text-sm text-gray-500">520kg</td>
+                                    <td class="py-5 text-sm text-gray-400">Oct 12, 2023</td>
+                                    <td class="py-5 text-right"><span class="px-3 py-1 rounded-full text-[10px] font-bold bg-green-100 text-green-700">Healthy</span></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="py-5 font-bold text-gray-700">G-402</td>
+                                    <td class="py-5 text-sm text-gray-500">Alpine Goat</td>
+                                    <td class="py-5 text-sm text-gray-500">45kg</td>
+                                    <td class="py-5 text-sm text-gray-400">Nov 05, 2023</td>
+                                    <td class="py-5 text-right"><span class="px-3 py-1 rounded-full text-[10px] font-bold bg-orange-100 text-orange-700">Due Vaccine</span></td>
+                                </tr>
+                                <tr class="hover:bg-gray-50 transition">
+                                    <td class="py-5 font-bold text-gray-700">S-112</td>
+                                    <td class="py-5 text-sm text-gray-500">Merino Sheep</td>
+                                    <td class="py-5 text-sm text-gray-500">72kg</td>
+                                    <td class="py-5 text-sm text-gray-400">Oct 28, 2023</td>
+                                    <td class="py-5 text-right"><span class="px-3 py-1 rounded-full text-[10px] font-bold bg-green-100 text-green-700">Healthy</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Sidebar logic
+        const menuBtn = document.getElementById('menu-btn');
+        const closeBtn = document.getElementById('close-sidebar');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('sidebar-active');
+            overlay.classList.toggle('active');
+        }
+        menuBtn.onclick = toggleSidebar;
+        closeBtn.onclick = toggleSidebar;
+        overlay.onclick = toggleSidebar;
+
+        // Notification toggle
+        const bellBtn = document.getElementById('bell-btn');
+        const dropdown = document.getElementById('notification-dropdown');
+        bellBtn.onclick = (e) => { e.stopPropagation(); dropdown.classList.toggle('active'); };
+        window.onclick = () => dropdown.classList.remove('active');
+
+        // Chart Initialization
+        const ctx = document.getElementById('herdChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Cows', 'Goats', 'Sheep'],
+                datasets: [{
+                    data: [60, 25, 15],
+                    backgroundColor: ['#16a34a', '#2563eb', '#f59e0b'],
+                    borderWidth: 0,
+                    hoverOffset: 15
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                cutout: '82%'
+            }
+        });
+    </script>
+</body>
+</html>
