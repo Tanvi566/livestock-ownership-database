@@ -18,7 +18,30 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background-color: var(--bg); color: var(--text-dark); overflow-x: hidden; }
+/* Animation Classes */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    visibility: hidden;
+}
 
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+}
+
+/* Staggered delay for cards so they don't all jump at once */
+.feature-card:nth-child(2) { transition-delay: 0.1s; }
+.feature-card:nth-child(3) { transition-delay: 0.2s; }
+.feature-card:nth-child(4) { transition-delay: 0.3s; }
+.feature-card:nth-child(5) { transition-delay: 0.4s; }
+
+/* Smooth scrolling for the whole page */
+html {
+    scroll-behavior: smooth;
+}
         /* --- NAVIGATION --- */
         nav {
             height: 70px;
@@ -223,7 +246,7 @@
                 <button class="filter-btn"><i class="fas fa-sliders-h"></i> Filter</button>
             </div>
 
-            <section class="hero-card">
+            <section class="hero-card reveal">
                 <h1>National Census Portal</h1>
                 <p>View livestock density and registration status across all 28 states and 8 UTs.</p>
             </section>
@@ -235,7 +258,7 @@
         </h2>
     </div>
 
-    <div class="feature-card" onclick="window.location.href='gvtSchemes.html'" style="text-align: left; border: 1px solid #e5e7eb;">
+    <div class="feature-card reveal" onclick="window.location.href='gvtSchemes.html'" style="text-align: left; border: 1px solid #e5e7eb;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
             <i class="fas fa-rocket" style="color: #ea580c; font-size: 1.2rem; margin: 0;"></i>
             <span class="badge badge-green">50-65% Subsidy</span>
@@ -244,7 +267,7 @@
         <p style="font-size: 0.75rem; color: #64748b; line-height: 1.4;">The "Startup India" for farmers. Funding up to ₹50 Lakh for goat, poultry, and more.</p>
     </div>
 
-    <div class="feature-card" onclick="window.location.href='gvtSchemes.html'" style="text-align: left; border: 1px solid #e5e7eb;">
+    <div class="feature-card reveal" onclick="window.location.href='gvtSchemes.html'" style="text-align: left; border: 1px solid #e5e7eb;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
             <i class="fas fa-dna" style="color: #2563eb; font-size: 1.2rem; margin: 0;"></i>
             <span class="badge badge-green">Breed Growth</span>
@@ -253,7 +276,7 @@
         <p style="font-size: 0.75rem; color: #64748b; line-height: 1.4;">Focus on milk production and indigenous breeds. Better cows = more money.</p>
     </div>
 
-    <div class="feature-card" onclick="window.location.href='gvtSchemes.html'" style="text-align: left; border: 1px solid #e5e7eb;">
+    <div class="feature-card reveal" onclick="window.location.href='gvtSchemes.html'" style="text-align: left; border: 1px solid #e5e7eb;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
             <i class="fas fa-industry" style="color: #7c3aed; font-size: 1.2rem; margin: 0;"></i>
             <span class="badge badge-orange">Loan Support</span>
@@ -262,7 +285,7 @@
         <p style="font-size: 0.75rem; color: #64748b; line-height: 1.4;">Subsidized loans for milk processing and cold storage. Think big-business mode.</p>
     </div>
 
-    <div class="feature-card" onclick="window.location.href='gvtSchemes.html'" style="text-align: left; border: 1px solid #e5e7eb;">
+    <div class="feature-card reveal" onclick="window.location.href='gvtSchemes.html'" style="text-align: left; border: 1px solid #e5e7eb;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
             <i class="fas fa-shield-virus" style="color: #16a34a; font-size: 1.2rem; margin: 0;"></i>
             <span class="badge badge-green">Free Medical</span>
@@ -272,14 +295,14 @@
     </div>
 
     <a href="gvtSchemes.html" style="text-decoration: none; color: inherit; grid-column: 1 / -1;">
-        <div class="feature-card" style="display: flex; align-items: center; justify-content: center; gap: 12px; background: #f0fdf4; border: 2px dashed #16a34a; padding: 1.5rem;">
+        <div class="feature-card reveal" style="display: flex; align-items: center; justify-content: center; gap: 12px; background: #f0fdf4; border: 2px dashed #16a34a; padding: 1.5rem;">
             <i class="fas fa-arrow-right-long" style="color: #16a34a; font-size: 1.2rem; margin: 0;"></i>
             <span style="font-weight: 800; color: #15803d; font-size: 1rem;">View All 15+ Government Schemes</span>
         </div>
     </a>
 </section>
 
-            <section class="map-section">
+            <section class="map-section reveal">
                 <h3>Live Livestock Density Map</h3>
                 <div class="map-wrapper">
                     <svg viewBox="0 0 612 650" xmlns="http://www.w3.org/2000/svg">
@@ -409,7 +432,33 @@ function handleChat(e) {
         }, 800);
     }
 }
+function initAnimations() {
+    console.log("Animation Engine Started...");
+    
+    const observerOptions = {
+        threshold: 0.15,
+        rootMargin: "0px 0px -50px 0px" // Triggers slightly before the element hits the view
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("active");
+            } else {
+                // If you want it to fade back out when scrolling UP, keep this:
+                entry.target.classList.remove("active");
+            }
+        });
+    }, observerOptions);
+
+    // Apply to all elements with the reveal class
+    document.querySelectorAll('.reveal').forEach(el => {
+        observer.observe(el);
+    });
+}
+
+// Run once the page is fully loaded
+window.addEventListener('load', initAnimations);
     </script>
 </body>
 </html>
-```

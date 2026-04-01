@@ -28,7 +28,29 @@
             color: var(--text-main);
             overflow-x: hidden; 
         }
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    visibility: hidden;
+}
 
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+}
+
+/* Staggered delay for cards so they don't all jump at once */
+.feature-card:nth-child(2) { transition-delay: 0.1s; }
+.feature-card:nth-child(3) { transition-delay: 0.2s; }
+.feature-card:nth-child(4) { transition-delay: 0.3s; }
+.feature-card:nth-child(5) { transition-delay: 0.4s; }
+
+/* Smooth scrolling for the whole page */
+html {
+    scroll-behavior: smooth;
+}
         /* Layout */
         .flex { display: flex; }
         .min-h-screen { min-height: 100vh; }
@@ -246,7 +268,7 @@
                 </div>
 
                 <div class="grid-layout">
-                    <div class="card" style="display: flex; flex-direction: column;">
+                    <div class="card reveal" style="display: flex; flex-direction: column;">
                         <h3 style="font-weight:700; margin-bottom:1.5rem; color: #374151;">Herd Composition</h3>
                         <div style="flex: 1; min-height: 200px; position: relative;">
                             <canvas id="herdChart"></canvas>
@@ -258,7 +280,7 @@
                         </div>
                     </div>
 
-                    <div class="card">
+                    <div class="card reveal">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
                             <h3 style="font-weight:700; color: #374151;">Live Vital Feed</h3>
                             <span class="badge pulse" style="background: #f0fdf4; color: #22c55e; display: flex; align-items: center; gap: 0.5rem;">
@@ -266,17 +288,17 @@
                             </span>
                         </div>
                         <div class="vital-grid">
-                            <div class="vital-card">
+                            <div class="vital-card reveal">
                                 <p style="font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Avg. Temperature</p>
                                 <h4 style="font-size: 1.875rem; font-weight: 700; margin-top: 0.5rem;">101.4°F</h4>
                                 <p style="font-size: 10px; color: #16a34a; font-weight: 700; margin-top: 0.25rem;">Healthy Range</p>
                             </div>
-                            <div class="vital-card">
+                            <div class="vital-card reveal">
                                 <p style="font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Hydration Status</p>
                                 <h4 style="font-size: 1.875rem; font-weight: 700; margin-top: 0.5rem;">92%</h4>
                                 <p style="font-size: 10px; color: #2563eb; font-weight: 700; margin-top: 0.25rem;">Stable</p>
                             </div>
-                            <div class="vital-card">
+                            <div class="vital-card reveal">
                                 <p style="font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase;">Activity Level</p>
                                 <h4 style="font-size: 1.875rem; font-weight: 700; margin-top: 0.5rem; color: #ea580c;">88%</h4>
                                 <p style="font-size: 10px; color: #9ca3af; font-weight: 700; margin-top: 0.25rem;">High Mobility</p>
@@ -376,6 +398,33 @@
                 cutout: '82%'
             }
         });
+        function initAnimations() {
+    console.log("Animation Engine Started...");
+    
+    const observerOptions = {
+        threshold: 0.15,
+        rootMargin: "0px 0px -50px 0px" // Triggers slightly before the element hits the view
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("active");
+            } else {
+                // If you want it to fade back out when scrolling UP, keep this:
+                entry.target.classList.remove("active");
+            }
+        });
+    }, observerOptions);
+
+    // Apply to all elements with the reveal class
+    document.querySelectorAll('.reveal').forEach(el => {
+        observer.observe(el);
+    });
+}
+
+// Run once the page is fully loaded
+window.addEventListener('load', initAnimations);
     </script>
 </body>
 </html>

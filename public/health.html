@@ -28,7 +28,29 @@
             color: var(--text-main);
             overflow-x: hidden; 
         }
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    visibility: hidden;
+}
 
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+}
+
+/* Staggered delay for cards so they don't all jump at once */
+.feature-card:nth-child(2) { transition-delay: 0.1s; }
+.feature-card:nth-child(3) { transition-delay: 0.2s; }
+.feature-card:nth-child(4) { transition-delay: 0.3s; }
+.feature-card:nth-child(5) { transition-delay: 0.4s; }
+
+/* Smooth scrolling for the whole page */
+html {
+    scroll-behavior: smooth;
+}
         /* Layout */
         .flex { display: flex; }
         .min-h-screen { min-height: 100vh; }
@@ -226,7 +248,7 @@
                         <div style="height: 256px;"><canvas id="healthLineChart"></canvas></div>
                     </div>
 
-                    <div class="health-score-card">
+                    <div class="health-score-card reaveal">
                         <div>
                             <h3 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">92%</h3>
                             <p style="font-size: 0.875rem; opacity: 0.8;">Overall Herd Health Score</p>
@@ -240,7 +262,7 @@
                     </div>
                 </div>
 
-                <div class="card" style="padding:0; overflow:hidden;">
+                <div class="card reveal" style="padding:0; overflow:hidden;">
                     <div style="padding: 1.5rem; border-bottom: 1px solid #f9fafb; font-weight: 700; font-size: 1.125rem;">Medical History</div>
                     <div class="table-container" style="padding: 0 1.5rem 1.5rem 1.5rem;">
                         <table>
@@ -313,6 +335,33 @@
                 }
             }
         });
+        function initAnimations() {
+    console.log("Animation Engine Started...");
+    
+    const observerOptions = {
+        threshold: 0.15,
+        rootMargin: "0px 0px -50px 0px" // Triggers slightly before the element hits the view
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("active");
+            } else {
+                // If you want it to fade back out when scrolling UP, keep this:
+                entry.target.classList.remove("active");
+            }
+        });
+    }, observerOptions);
+
+    // Apply to all elements with the reveal class
+    document.querySelectorAll('.reveal').forEach(el => {
+        observer.observe(el);
+    });
+}
+
+// Run once the page is fully loaded
+window.addEventListener('load', initAnimations);
     </script>
 </body>
 </html>
