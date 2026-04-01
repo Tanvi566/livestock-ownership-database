@@ -122,6 +122,7 @@
             transition: 0.3s;
             cursor: pointer;
             text-align: center;
+            
         }
         .feature-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
         .feature-card i { font-size: 1.8rem; color: var(--primary); margin-bottom: 12px; display: block; }
@@ -138,6 +139,7 @@
             background: white; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.15);
             display: none; flex-direction: column; z-index: 2000; overflow: hidden;
         }
+        
         .chat-header { background: var(--primary); color: white; padding: 15px; font-weight: 700; display: flex; justify-content: space-between; }
         .chat-body { flex: 1; padding: 15px; overflow-y: auto; background: #f8fafc; display: flex; flex-direction: column; gap: 10px; }
         .msg { padding: 10px; border-radius: 12px; font-size: 0.85rem; max-width: 80%; }
@@ -169,7 +171,12 @@
         <aside class="profile-sidebar">
             <img src="https://ui-avatars.com/api/?name=Farmer+John&background=166534&color=fff" class="profile-img">
             <h2>Farmer John Doe</h2>
-            <a href="FarmerDash.html" style="padding: 16px 32px; font-size: 1.1rem;">Access Profile</a>
+            <a href="FarmerDash.html"
+   style="padding: 16px 32px; font-size: 1.1rem; text-decoration: none; color:#064e3b;"
+   onmouseover="this.style.textDecoration='underline'; this.style.color='#1e293b'"
+   onmouseout="this.style.textDecoration='none'; this.style.color='#064e3b'">
+   <b>View Profile</b>
+</a>
             <div style="text-align: left; margin-top: 25px; border-top: 1px solid #eee; padding-top: 20px;">
                 <div class="animal-count-box">
                 <span class="count-number" id="userAnimalCount">12</span>
@@ -196,19 +203,28 @@
 
             <section class="feature-grid">
                 <div class="feature-card">
+                    <a class="a"style="text-decoration: none;color:rgb(28, 27, 27)"href="registration.html" onmouseover="this.style.textDecoration='underline'; this.style.color='#1e293b'"
+   onmouseout="this.style.textDecoration='none'; this.style.color='#064e3b'">
                     <i class="fas fa-plus-circle"></i>
                     <h3>Registration</h3>
                     <p style="font-size: 0.8rem; color: #64748b;">Enroll new cattle</p>
+                    </a>
                 </div>
                 <div class="feature-card">
+                     <a class="a"style="text-decoration: none;color:rgb(28, 27, 27)"href="health.html" onmouseover="this.style.textDecoration='underline'; this.style.color='#1e293b'"
+   onmouseout="this.style.textDecoration='none'; this.style.color='#064e3b'">
                     <i class="fas fa-heartbeat"></i>
                     <h3>Health Logs</h3>
                     <p style="font-size: 0.8rem; color: #64748b;">Track medical history</p>
+                    </a>
                 </div>
                 <div class="feature-card">
+                    <a class="a"style="text-decoration: none;color:rgb(28, 27, 27)"href="schemes.html" onmouseover="this.style.textDecoration='underline'; this.style.color='#1e293b'"
+   onmouseout="this.style.textDecoration='none'; this.style.color='#064e3b'">
                     <i class="fas fa-file-invoice-dollar"></i>
                     <h3>Subsidies</h3>
                     <p style="font-size: 0.8rem; color: #64748b;">View available grants</p>
+                    </a>
                 </div>
             </section>
 
