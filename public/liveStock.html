@@ -6,7 +6,7 @@
     <title>LiveTrack | My Livestock</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap');
 
@@ -262,8 +262,11 @@ html {
                         <p style="color: #6b7280; margin-top: 0.25rem;">Detailed distribution and real-time health data.</p>
                     </div>
                     <div style="display: flex; gap: 0.75rem;">
-                        <button class="btn btn-white"><i class="fas fa-download"></i> Report</button>
-                        <button class="btn btn-green">+ Add Animal</button>
+                  <button class="btn btn-white action-btn" onclick="downloadPDF()" style="border: 1px solid #fed7aa66;">
+    <i class="fas fa-file-chart-column" style="color: #ea580c;"></i>
+    <span style="font-size: 0.875rem; font-weight: 700;">Export Report</span>
+</button>
+                        <button class="btn btn-green"><a href="registration.html" style="text-decoration: none; color: inherit;">+ Add Animal</a></button>
                     </div>
                 </div>
 
@@ -416,7 +419,54 @@ html {
             }
         });
     }, observerOptions);
+ window.downloadPDF = function() {
+    const element = document.querySelector('main');
+    
+    // 1. Force reveal elements to be solid and dark before the snap
+    const reveals = document.querySelectorAll('.reveal');
+    reveals.forEach(el => {
+        el.style.opacity = '1';
+        el.style.visibility = 'visible';
+        el.style.transform = 'none';
+        el.style.transition = 'none'; // Stop animations from blurring the snap
+    });
 
+    const opt = {
+        margin: [10, 10],
+        filename: 'Livestock_Report_HD.pdf',
+        image: { type: 'jpeg', quality: 1.0 }, // Maximum quality
+        html2canvas: { 
+            scale: 3, // <--- INCREASE THIS (2 is standard, 3-4 is "Retina" quality)
+            useCORS: true,
+            letterRendering: true,
+            backgroundColor: '#ffffff', // Ensures the background isn't transparent/faded
+            scrollY: 0,
+            scrollX: 0
+        },
+        jsPDF: { 
+            unit: 'mm', 
+            format: 'a4', 
+            orientation: 'landscape',
+            precision: 32 // Higher precision for text placement
+        }
+    };
+
+    // Hide UI noise
+    const uiElements = document.querySelectorAll('.btn, #menu-btn, #bell-btn, aside');
+    uiElements.forEach(el => el.style.display = 'none');
+
+    html2pdf().set(opt).from(element).save().then(() => {
+        // Restore everything
+        uiElements.forEach(el => el.style.display = '');
+        reveals.forEach(el => {
+            el.style.transition = '';
+            if(!el.classList.contains('active')) {
+                el.style.opacity = '';
+                el.style.visibility = '';
+            }
+        });
+    });
+};
     // Apply to all elements with the reveal class
     document.querySelectorAll('.reveal').forEach(el => {
         observer.observe(el);
