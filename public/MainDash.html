@@ -367,6 +367,12 @@ html {
     </div>
 
     <script>
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+
+        if (!user) {
+            window.location.href = "login_signup.html";
+        }
+
         function toggleChat() {
             const win = document.getElementById('chatWindow');
             win.style.display = (win.style.display === 'flex') ? 'none' : 'flex';

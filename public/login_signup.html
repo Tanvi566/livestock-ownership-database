@@ -513,45 +513,49 @@
     }
     window.location.href = authUrl;
   }
-  async function handleLogin() {
-    const email = document.getElementById('loginEmail').value.trim();
-    const pass  = document.getElementById('loginPass').value;
-    if (!email || !pass) { showMsg('loginMsg','Please fill in all fields.','error'); return; }
+  function handleLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass  = document.getElementById('loginPass').value;
 
-    try {
-      const res  = await fetch('/api/login', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ email, password: pass })
-      });
-      const data = await res.json();
-      if (res.ok) showMsg('loginMsg', '🌸 Welcome back! ' + (data.message||''), 'success');
-      else        showMsg('loginMsg', data.error || 'Login failed.', 'error');
-    } catch {
-      showMsg('loginMsg','Cannot reach server. Running in demo mode.','error');
-    }
+  let users = JSON.parse(localStorage.getItem('users')) || [];
+
+  const user = users.find(u => u.email === email && u.pass === pass);
+
+  if (user) {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    showMsg('loginMsg','Login successful!','success');
+
+    setTimeout(() => {
+      window.location.href = "MainDash.html";
+    }, 1000);
+  } else {
+    showMsg('loginMsg','Invalid credentials','error');
   }
+}
 
   async function handleSignup() {
-    const name  = document.getElementById('signupName').value.trim();
-    const email = document.getElementById('signupEmail').value.trim();
-    const pass  = document.getElementById('signupPass').value;
-    if (!name || !email || !pass) { showMsg('signupMsg','Please fill in all fields.','error'); return; }
-    if (pass.length < 6) { showMsg('signupMsg','Password must be 6+ characters.','error'); return; }
+  const name  = document.getElementById('signupName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const pass  = document.getElementById('signupPass').value;
 
-    try {
-      const res  = await fetch('/api/signup', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ name, email, password: pass })
-      });
-      const data = await res.json();
-      if (res.ok) { showMsg('signupMsg','🌼 Account created! You can now log in.','success'); setTimeout(()=>switchTab('login'),2000); }
-      else        showMsg('signupMsg', data.error || 'Sign up failed.', 'error');
-    } catch {
-      showMsg('signupMsg','Cannot reach server. Running in demo mode.','error');
-    }
+  if (!name || !email || !pass) {
+    showMsg('signupMsg','Please fill in all fields.','error');
+    return;
   }
+
+  let users = JSON.parse(localStorage.getItem('users')) || [];
+
+  if (users.find(u => u.email === email)) {
+    showMsg('signupMsg','User already exists.','error');
+    return;
+  }
+
+  users.push({ name, email, pass });
+  localStorage.setItem('users', JSON.stringify(users));
+
+  showMsg('signupMsg','Account created!','success');
+  setTimeout(()=>switchTab('login'),1500);
+}
 
   // Close on backdrop click
   overlay.addEventListener('click', closeCard);
