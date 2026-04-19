@@ -15,10 +15,18 @@
             --white: #ffffff;
             --text-dark: #1a2e1a;
         }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: var(--bg); color: var(--text-dark); overflow-x: hidden; }
-/* Animation Classes */
+        * { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+    font-family: 'Plus Jakarta Sans', sans-serif; 
+}
+html, body {
+    width: 100%;
+    overflow-x: hidden;
+    position: relative;
+     background-color: var(--bg); color: var(--text-dark); 
+}
 .reveal {
     opacity: 0;
     transform: translateY(30px);
@@ -57,15 +65,16 @@ html {
         }
         .logo { font-size: 1.5rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 10px; }
 
-        /* --- LAYOUT --- */
         .container {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 25px;
-            padding: 25px 5%;
-            max-width: 1600px;
-            margin: 0 auto;
-        }
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr); 
+    gap: 25px;
+    padding: 25px 5%;
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 100%; 
+    box-sizing: border-box;
+}
 
         /* --- SIDEBAR --- */
         .profile-sidebar {
@@ -199,6 +208,16 @@ html {
         .chat-footer input { flex: 1; border: 1px solid #ddd; padding: 8px 12px; border-radius: 20px; outline: none; }
 
         #map-tooltip { position: absolute; background: #1e293b; color: white; padding: 10px; border-radius: 8px; display: none; z-index: 3000; pointer-events: none; font-size: 0.8rem; }
+        @media (max-width: 1024px) {
+    .container {
+        grid-template-columns: 1fr; /* Stacks sidebar on top of content for smaller screens */
+        padding: 20px;
+    }
+    
+    .profile-sidebar {
+        width: 100%;
+    }
+}
     </style>
 </head>
 <body>
