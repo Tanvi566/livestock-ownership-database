@@ -1,31 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>FarmTracker — Smart Farming Starts Here</title>
-
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FarmTracker — Welcome</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Nunito:wght@400;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      /* tells the browser to include padding and borders inside the width you specify.tells the browser to include padding and borders inside the width you specify. */
+      margin: 0;
+      padding: 0;
+    }
+
     :root {
       --cream: #f5ede0;
       --warm-tan: #c9a87c;
       --rust: #c0673a;
-      --rust-dark: #a0522d;
       --sage: #7a9e7e;
       --sky: #9bbfcc;
       --dark-brown: #3d2b1f;
-      --white-glass: rgba(255, 255, 255, 0.15);
-      --border-glass: rgba(255, 255, 255, 0.3);
-      --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
-    }
-
-    * { 
-      box-sizing: border-box; 
-      margin: 0; 
-      padding: 0; 
-      transition: all 0.2s ease-in-out;
+      --glass-bg: rgba(255, 252, 245, 0.55);
+      --glass-border: rgba(255, 252, 245, 0.55);
     }
 
     body {
@@ -34,334 +36,556 @@
       align-items: center;
       justify-content: center;
       font-family: 'Nunito', sans-serif;
-      background: #2d3436;
-      color: var(--dark-brown);
+      background: var(--sky);
       overflow: hidden;
+      position: relative;
     }
 
-    /* BACKGROUND SCENE */
+    /* ── SCENE ── */
     .scene {
       position: fixed;
       inset: 0;
-      z-index: -1;
+      /* means top,bottom,left,right = 0 */
+      z-index: 0;
+      transition: filter 0.6s ease;
+      background: var(--sky);
     }
+
+    .scene.blurred {
+      filter: blur(8px) brightness(0.85);
+    }
+
     .scene img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      filter: brightness(0.7);
-    }
-    /* Fallback gradient if image fails */
-    .scene::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(122, 158, 126, 0.4), rgba(155, 191, 204, 0.4));
+      /* It crops the edges if necessary so the image is never stretched or "squished". */
+      display: block;
     }
 
+    /* ── OVERLAY ── */
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0);
-      pointer-events: none;
+      background: rgba(61, 43, 31, 0);
+      transition: background 0.6s ease;
       z-index: 1;
-    }
-    .overlay.active {
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(4px);
-      pointer-events: all;
+      pointer-events: none;
+      /* . It ensures that even though the overlay covers the screen, you can still click "through" it to hit buttons on the landing page. */
     }
 
-    /* LANDING UI */
-    .landing {
+    .overlay.active {
+      background: rgba(61, 43, 31, 0.18);
+    }
+
+    /* ── STAGE (landing + modal share same z-layer) ── */
+    .stage {
       position: relative;
       z-index: 2;
-      text-align: center;
-      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    /* ── LANDING ── */
+    .landing {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .landing.hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(16px);
+      /* used to move an element vertically along the Y-axis (up and down). */
     }
 
     .logo {
       font-family: 'Playfair Display', serif;
-      font-size: 4rem;
-      color: white;
-      text-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      margin-bottom: 0.5rem;
+      color: #000000;
+      font-size: clamp(2rem, 6vw, 3.6rem);
+      text-shadow: none;
+      letter-spacing: 0.02em;
+      text-align: center;
     }
-    .logo span { color: var(--warm-tan); }
+
+    .logo span {
+      color: #000000;
+    }
 
     .tagline {
-      color: white;
-      font-weight: 700;
-      letter-spacing: 3px;
-      font-size: 0.9rem;
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      margin-bottom: 2rem;
-      opacity: 0.9;
+      background: rgba(40, 25, 10, 0.55);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      padding: 7px 20px;
+      border-radius: 50px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
     }
 
     .btn-group {
       display: flex;
-      gap: 15px;
-      justify-content: center;
+      gap: 14px;
+      margin-top: 10px;
     }
 
-    /* BUTTON STYLES */
-    button {
+    .btn-primary,
+    .btn-secondary {
+      padding: 13px 36px;
+      border-radius: 50px;
       font-family: 'Nunito', sans-serif;
       font-weight: 700;
+      font-size: 1rem;
+      letter-spacing: 0.06em;
       cursor: pointer;
-      border: none;
-      outline: none;
-    }
-
-    .btn-main {
-      padding: 14px 40px;
-      border-radius: 50px;
-      font-size: 1rem;
-      background: var(--rust);
-      color: white;
-      box-shadow: 0 4px 15px rgba(192, 103, 58, 0.4);
-    }
-    .btn-main:hover {
-      background: var(--rust-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(192, 103, 58, 0.6);
-    }
-
-    .btn-outline {
-      padding: 14px 40px;
-      border-radius: 50px;
-      font-size: 1rem;
-      background: transparent;
-      color: white;
-      border: 2px solid white;
-    }
-    .btn-outline:hover {
-      background: white;
+      background: rgba(255, 252, 245, 0.45);
       color: var(--dark-brown);
-      transform: translateY(-2px);
+      border: none;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: inset 0 0 0 1.5px rgba(255, 252, 245, 0.6), 0 4px 20px rgba(61, 43, 31, 0.15);
+      text-shadow: 0 1px 4px rgba(61, 43, 31, 0.4);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
     }
 
-    /* MODAL CARD */
+    .btn-primary:hover,
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      background: rgba(255, 252, 245, 0.7);
+      box-shadow: inset 0 0 0 1.5px rgba(255, 252, 245, 0.8), 0 8px 28px rgba(61, 43, 31, 0.2);
+    }
+
+    .btn-primary:active,
+    .btn-secondary:active {
+      transform: translateY(1px);
+    }
+
+    /* ── MODAL CARD ── */
     .card-wrap {
       position: fixed;
       inset: 0;
       display: flex;
       align-items: center;
       justify-content: center;
+      z-index: 3;
       opacity: 0;
       pointer-events: none;
-      z-index: 10;
-      transform: scale(0.95);
+      transition: opacity 0.45s ease;
     }
+
     .card-wrap.visible {
       opacity: 1;
       pointer-events: all;
-      transform: scale(1);
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--border-glass);
-      box-shadow: var(--shadow);
-      padding: 40px;
+      background: var(--glass-bg);
+      border: 1.5px solid var(--glass-border);
+      backdrop-filter: blur(18px) saturate(1.4);
+      -webkit-backdrop-filter: blur(18px) saturate(1.4);
       border-radius: 24px;
-      width: 100%;
-      max-width: 400px;
-      position: relative;
+      padding: 38px 40px 34px;
+      width: min(400px, 90vw);
+      box-shadow: 0 12px 48px rgba(61, 43, 31, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      transform: translateY(24px) scale(0.96);
+      transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
-    .btn-close {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: none;
-      font-size: 1.5rem;
-      color: var(--dark-brown);
-      opacity: 0.5;
-    }
-    .btn-close:hover { opacity: 1; }
-
-    .card-header {
-      text-align: center;
-      margin-bottom: 30px;
+    .card-wrap.visible .card {
+      transform: translateY(0) scale(1);
     }
 
     .card-title {
       font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      margin-bottom: 8px;
+      color: var(--dark-brown);
+      font-size: 1.7rem;
+      margin-bottom: 6px;
+      text-align: center;
     }
 
     .card-sub {
-      font-size: 0.95rem;
-      color: #666;
+      text-align: center;
+      font-size: 0.82rem;
+      color: #6b5040;
+      margin-bottom: 26px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
-    /* TABS */
+    /* Tabs */
     .tabs {
       display: flex;
-      background: rgba(0,0,0,0.05);
-      padding: 5px;
+      gap: 0;
+      background: rgba(255, 252, 245, 0.4);
       border-radius: 12px;
-      margin-bottom: 25px;
+      padding: 4px;
+      margin-bottom: 26px;
+      border: 1px solid rgba(255, 252, 245, 0.6);
     }
+
     .tab {
       flex: 1;
+      padding: 8px;
       text-align: center;
-      padding: 10px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #8a6e56;
+      cursor: pointer;
+      border-radius: 9px;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+      user-select: none;
+    }
+
+    .tab.active {
+      background: var(--sage);
+      color: var(--dark-brown);
+      box-shadow: 0 2px 8px rgba(61, 43, 31, 0.2);
+    }
+
+    /* Form panels */
+    .form-panel {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .form-panel.active {
+      display: flex;
+    }
+
+    label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--dark-brown);
+      margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(255, 252, 245, 0.7);
+      background: rgba(255, 252, 245, 0.55);
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      color: var(--dark-brown);
+      outline: none;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+    }
+
+    input:focus {
+      border-color: var(--sage);
+      background: rgba(255, 252, 245, 0.8);
+      box-shadow: 0 0 0 3px rgba(122, 158, 126, 0.25);
+    }
+
+    input::placeholder {
+      color: #b09080;
+    }
+
+    .input-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .input-wrapper input {
+      padding-right: 44px;
+    }
+
+    .eye-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #8a6e56;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.2s ease;
+    }
+
+    .eye-toggle:hover {
+      color: var(--sage);
+    }
+
+    .forgot {
+      text-align: right;
+      margin-top: 6px;
+    }
+
+    .forgot a {
+      font-size: 0.82rem;
+      color: #8a6e56;
+      text-decoration: none;
       cursor: pointer;
       font-weight: 700;
-      border-radius: 8px;
-      color: #777;
-    }
-    .tab.active {
-      background: white;
-      color: var(--rust);
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      transition: color 0.2s ease, text-shadow 0.2s ease;
     }
 
-    /* FORMS */
-    .form-panel { display: none; }
-    .form-panel.active { 
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      animation: fadeIn 0.3s ease;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
-    input {
-      width: 100%;
-      padding: 12px 16px;
-      border-radius: 12px;
-      border: 1.5px solid #ddd;
-      font-family: inherit;
-      font-size: 1rem;
-    }
-    input:focus {
-      border-color: var(--rust);
-      box-shadow: 0 0 0 4px rgba(192, 103, 58, 0.1);
-      outline: none;
+    .forgot a:hover {
+      color: var(--sage);
+      text-shadow: 0 0 8px rgba(192, 103, 58, 0.3);
     }
 
     .btn-submit {
-      margin-top: 10px;
+      margin-top: 4px;
+      width: 100%;
       padding: 14px;
       border-radius: 12px;
-      background: var(--rust);
-      color: white;
-      font-size: 1rem;
-    }
-    .btn-submit:hover {
-      background: var(--rust-dark);
+      border: none;
+      background: rgba(122, 158, 126, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: var(--dark-brown);
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #4a664d, 0 6px 16px rgba(61, 43, 31, 0.25);
+      transition: transform 0.15s, box-shadow 0.15s;
     }
 
-    /* MESSAGES */
-    .msg {
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      display: none;
-      text-align: center;
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 0 #4a664d, 0 10px 22px rgba(61, 43, 31, 0.3);
     }
-    .msg.visible { display: block; }
-    .msg.success { background: #e6f4ea; color: #1e7e34; }
-    .msg.error { background: #fce8e6; color: #d93025; }
+
+    .btn-submit:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 0 #4a664d;
+    }
 
     .card-footer {
-      margin-top: 25px;
       text-align: center;
-      font-size: 0.9rem;
-      color: #666;
+      margin-top: 18px;
+      font-size: 0.82rem;
+      color: #6b5040;
+      font-weight: 600;
     }
+
     .card-footer a {
-      color: var(--rust);
-      font-weight: 700;
-      text-decoration: none;
+      color: var(--sage);
+      text-decoration: underline;
       cursor: pointer;
     }
-    .card-footer a:hover { text-decoration: underline; }
 
-    /* RESPONSIVE */
-    @media (max-width: 480px) {
-      .logo { font-size: 2.8rem; }
-      .card { margin: 15px; padding: 30px 20px; }
-      .btn-group { flex-direction: column; width: 100%; max-width: 250px; margin: 0 auto; }
+    .card-footer a:hover {
+      color: var(--dark-brown);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: #8a6e56;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.15s, transform 0.15s;
+      padding: 4px;
+    }
+
+    .close-btn:hover {
+      color: var(--sage);
+      transform: rotate(90deg);
+    }
+
+    /* status message */
+    .msg {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-align: center;
+      padding: 8px 12px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .msg.success {
+      display: block;
+      background: rgba(122, 158, 126, 0.25);
+      color: #3a6e3e;
+      border: 1px solid rgba(122, 158, 126, 0.5);
+    }
+
+    .msg.error {
+      display: block;
+      background: rgba(192, 103, 58, 0.15);
+      color: var(--sage);
+      border: 1px solid rgba(192, 103, 58, 0.4);
+    }
+
+    /* ── GOOGLE BUTTON ── */
+    .btn-google {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(255, 252, 245, 0.6);
+      background: rgba(255, 255, 255, 0.9);
+      color: #3d2b1f;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      box-shadow: 0 2px 10px rgba(61, 43, 31, 0.12);
+    }
+
+    .btn-google:hover {
+      background: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(61, 43, 31, 0.2);
+    }
+
+    .btn-google:active {
+      transform: translateY(1px);
+    }
+
+    .btn-google svg {
+      flex-shrink: 0;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 2px 0;
+    }
+
+    .divider span {
+      font-size: 0.75rem;
+      color: #8a6e56;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(61, 43, 31, 0.2);
     }
   </style>
 </head>
 
 <body>
 
-  <!-- BACKGROUND IMAGE -->
-  <div class="scene">
-    <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80" onerror="this.style.display='none'">
+  <!-- BACKGROUND SCENE -->
+  <div class="scene" id="scene">
+    <img src="MDbg.png" alt="Farm Background">
   </div>
 
-  <div class="overlay" id="overlay" onclick="closeCard()"></div>
+  <div class="overlay" id="overlay"></div>
 
-  <!-- LANDING PAGE content -->
-  <div class="landing" id="landing">
-    <h1 class="logo">Farm<span>Tracker</span></h1>
-    <p class="tagline">Smart Farming Starts Here</p>
+  <!-- LANDING BUTTONS -->
+  <div class="stage">
+    <div class="landing" id="landing">
+      <div class="logo"><i class="fas fa-tractor" style="color: #000000; margin-right: 0.5rem; font-size: 0.8em; transform: translateY(-4px); display: inline-block;"></i>Farm<span>Track</span></div>
 
-    <div class="btn-group">
-      <button class="btn-main" onclick="openCard('login')">Get Started</button>
-      <button class="btn-outline" onclick="openCard('signup')">Sign Up</button>
+      <div class="btn-group">
+        <button class="btn-primary" onclick="openCard('login')">Login</button>
+        <button class="btn-secondary" onclick="openCard('signup')">Sign Up</button>
+      </div>
     </div>
   </div>
 
-  <!-- AUTH MODAL -->
+  <!-- MODAL CARD -->
   <div class="card-wrap" id="cardWrap">
     <div class="card">
-      <button class="btn-close" onclick="closeCard()">&times;</button>
-      
-      <div class="card-header">
-        <h2 class="card-title" id="cardTitle">Welcome Back 🌾</h2>
-        <p class="card-sub" id="cardSub">Sign in to manage your harvest</p>
-      </div>
+      <button class="close-btn" onclick="closeCard()" title="Close">✕</button>
+      <div class="card-title">Welcome Back 🌾</div>
+      <div class="card-sub" id="cardSub">Sign in to FarmTracker</div>
 
-      <!-- TABS -->
+      <!-- Tabs -->
       <div class="tabs">
         <div class="tab active" id="tabLogin" onclick="switchTab('login')">Login</div>
         <div class="tab" id="tabSignup" onclick="switchTab('signup')">Sign Up</div>
       </div>
 
-      <!-- LOGIN PANEL -->
+      <!-- Login Panel -->
       <div class="form-panel active" id="panelLogin">
-        <div class="input-group">
-          <input id="loginEmail" type="email" placeholder="Email Address">
+        <div>
+          <label for="loginEmail">Username / Email</label>
+          <input type="email" id="loginEmail" placeholder="you@farmtracker.com" />
         </div>
-        <div class="input-group">
-          <input id="loginPass" type="password" placeholder="Password">
+        <div>
+          <label for="loginPass">Password</label>
+          <div class="input-wrapper">
+            <input type="password" id="loginPass" placeholder="••••••••" />
+            <div class="eye-toggle" onclick="togglePassword('loginPass', this)" title="Toggle Password Visibility">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </div>
+          </div>
+          <div class="forgot"><a href="#">Forgot Password?</a></div>
         </div>
         <div id="loginMsg" class="msg"></div>
-        <button class="btn-submit" onclick="handleLogin()">Sign In</button>
+        <button class="btn-submit" onclick="handleLogin()">Login</button>
       </div>
 
-      <!-- SIGNUP PANEL -->
+      <!-- Sign Up Panel -->
       <div class="form-panel" id="panelSignup">
-        <div class="input-group">
-          <input id="signupName" type="text" placeholder="Full Name">
+        <div>
+          <label for="signupName">Full Name</label>
+          <input type="text" id="signupName" placeholder="Bessie the Farmer" />
         </div>
-        <div class="input-group">
-          <input id="signupEmail" type="email" placeholder="Email Address">
+        <div>
+          <label for="signupEmail">Email</label>
+          <input type="email" id="signupEmail" placeholder="you@farmtracker.com" />
         </div>
-        <div class="input-group">
-          <input id="signupPass" type="password" placeholder="Create Password">
+        <div>
+          <label for="signupPass">Password</label>
+          <div class="input-wrapper">
+            <input type="password" id="signupPass" placeholder="••••••••" />
+            <div class="eye-toggle" onclick="togglePassword('signupPass', this)" title="Toggle Password Visibility">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label for="signupConfirmPass">Confirm Password</label>
+          <div class="input-wrapper">
+            <input type="password" id="signupConfirmPass" placeholder="••••••••" />
+            <div class="eye-toggle" onclick="togglePassword('signupConfirmPass', this)"
+              title="Toggle Password Visibility">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </div>
+          </div>
         </div>
         <div id="signupMsg" class="msg"></div>
         <button class="btn-submit" onclick="handleSignup()">Create Account</button>
@@ -370,122 +594,127 @@
       <div class="card-footer" id="cardFooter">
         Don't have an account? <a onclick="switchTab('signup')">Sign Up</a>
       </div>
-
     </div>
   </div>
 
+  <!-- Load Supabase Library from CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Load Configuration File -->
+  <script src="config.js"></script>
+
   <script>
-  const overlay = document.getElementById('overlay');
-  const cardWrap = document.getElementById('cardWrap');
-  const landing = document.getElementById('landing');
+    const scene = document.getElementById('scene');
+    const overlay = document.getElementById('overlay');
+    const landing = document.getElementById('landing');
+    const cardWrap = document.getElementById('cardWrap');
 
-  /* ── FAKE USERS (ONLY THESE CAN LOGIN) ── */
-  const demoUsers = [
-    { name: "Tanvi", email: "tanvi@farm.com", pass: "1234" },
-    { name: "Farmer Joe", email: "joe@farm.com", pass: "farm123" },
-    { name: "Bessie", email: "bessie@farm.com", pass: "cow123" },
-    { name: "Admin", email: "admin@farm.com", pass: "admin" }
-  ];
-
-  /* ── MODAL CONTROL ── */
-  function openCard(tab) {
-    cardWrap.classList.add('visible');
-    overlay.classList.add('active');
-    landing.style.filter = 'blur(10px)';
-    landing.style.opacity = '0.3';
-    switchTab(tab);
-  }
-
-  function closeCard() {
-    cardWrap.classList.remove('visible');
-    overlay.classList.remove('active');
-    landing.style.filter = 'none';
-    landing.style.opacity = '1';
-  }
-
-  /* ── TAB SWITCHING ── */
-  function switchTab(tab) {
-    const isLogin = tab === 'login';
-
-    document.getElementById('tabLogin').classList.toggle('active', isLogin);
-    document.getElementById('tabSignup').classList.toggle('active', !isLogin);
-
-    document.getElementById('panelLogin').classList.toggle('active', isLogin);
-    document.getElementById('panelSignup').classList.toggle('active', !isLogin);
-
-    document.getElementById('cardTitle').textContent =
-      isLogin ? 'Welcome Back 🌾' : 'Join the Farm 🚜';
-
-    document.getElementById('cardSub').textContent =
-      isLogin
-        ? 'Sign in to manage your harvest'
-        : 'Start your journey with FarmTracker';
-
-    const footer = document.getElementById('cardFooter');
-    footer.innerHTML = isLogin
-      ? `Don't have an account? <a onclick="switchTab('signup')">Sign Up</a>`
-      : `Already have an account? <a onclick="switchTab('login')">Login</a>`;
-
-    // clear messages
-    document.querySelectorAll('.msg').forEach(m => m.classList.remove('visible'));
-  }
-
-  /* ── MESSAGE DISPLAY ── */
-  function showMsg(id, text, type) {
-    const el = document.getElementById(id);
-    el.textContent = text;
-    el.className = `msg visible ${type}`;
-
-    if (type === 'error') {
-      setTimeout(() => el.classList.remove('visible'), 4000);
-    }
-  }
-
-  /* ── LOGIN (ONLY PREDEFINED USERS) ── */
-  function handleLogin() {
-    const email = document.getElementById('loginEmail').value.trim();
-    const pass = document.getElementById('loginPass').value.trim();
-
-    if (!email || !pass) {
-      showMsg('loginMsg', 'Please fill in all fields', 'error');
-      return;
+    function openCard(tab) {
+      scene.classList.add('blurred');
+      overlay.classList.add('active');
+      landing.classList.add('hidden');
+      cardWrap.classList.add('visible');
+      switchTab(tab);
     }
 
-    const user = demoUsers.find(
-      u => u.email === email && u.pass === pass
-    );
-
-    if (user) {
-      showMsg('loginMsg', `Welcome back, ${user.name}!`, 'success');
-
+    function closeCard() {
+      cardWrap.classList.remove('visible');
       setTimeout(() => {
-        window.location.href = "MainDash.html";
-      }, 1000);
-
-    } else {
-      showMsg('loginMsg', 'Invalid email or password', 'error');
-    }
-  }
-
-  /* ── FAKE SIGNUP (NO STORAGE, JUST REDIRECT) ── */
-  function handleSignup() {
-    const name = document.getElementById('signupName').value.trim();
-    const email = document.getElementById('signupEmail').value.trim();
-    const pass = document.getElementById('signupPass').value.trim();
-
-    if (!name || !email || !pass) {
-      showMsg('signupMsg', 'All fields are required', 'error');
-      return;
+        scene.classList.remove('blurred');
+        overlay.classList.remove('active');
+        landing.classList.remove('hidden');
+      }, 200);
     }
 
-    // fake success
-    showMsg('signupMsg', 'Account created successfully!', 'success');
+    function switchTab(tab) {
+      const isLogin = tab === 'login';
+      document.getElementById('tabLogin').classList.toggle('active', isLogin);
+      document.getElementById('tabSignup').classList.toggle('active', !isLogin);
+      document.getElementById('panelLogin').classList.toggle('active', isLogin);
+      document.getElementById('panelSignup').classList.toggle('active', !isLogin);
+      document.getElementById('cardSub').textContent = isLogin
+        ? 'Sign in to FarmTracker' : 'Join FarmTracker today';
+      const footer = document.getElementById('cardFooter');
+      footer.innerHTML = isLogin
+        ? `Don't have an account? <a onclick="switchTab('signup')">Sign Up</a>`
+        : `Already have an account? <a onclick="switchTab('login')">Login</a>`;
+    }
 
-    setTimeout(() => {
-      window.location.href = "MainDash.html";
-    }, 1200);
-  }
-</script>
+    function showMsg(id, text, type) {
+      const el = document.getElementById(id);
+      el.textContent = text;
+      el.className = 'msg ' + type;
+      setTimeout(() => { el.className = 'msg'; }, 3500);
+    }
 
+    // Initialize Supabase Client
+    async function handleLogin() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPass').value;
+      if (!email || !pass) { showMsg('loginMsg', 'Please fill in all fields.', 'error'); return; }
+
+      try {
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+          email: email,
+          password: pass,
+        });
+
+        if (error) {
+          showMsg('loginMsg', error.message || 'Login failed.', 'error');
+        } else {
+          showMsg('loginMsg', '🌸 Welcome back!', 'success');
+          // Redirect the user to the dashboard
+          setTimeout(() => {
+            window.location.href = 'MainDash.html';
+          }, 1500);
+        }
+      } catch (err) {
+        showMsg('loginMsg', 'An unexpected error occurred.', 'error');
+      }
+    }
+
+    function togglePassword(inputId, toggleEl) {
+      const input = document.getElementById(inputId);
+      const isPassword = input.type === 'password';
+      input.type = isPassword ? 'text' : 'password';
+      toggleEl.innerHTML = isPassword ?
+        '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>' :
+        '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
+    }
+
+    async function handleSignup() {
+      const name = document.getElementById('signupName').value.trim();
+      const email = document.getElementById('signupEmail').value.trim();
+      const pass = document.getElementById('signupPass').value;
+      const confirmPass = document.getElementById('signupConfirmPass').value;
+      if (!name || !email || !pass || !confirmPass) { showMsg('signupMsg', 'Please fill in all fields.', 'error'); return; }
+      if (pass !== confirmPass) { showMsg('signupMsg', 'Passwords do not match.', 'error'); return; }
+      if (pass.length < 6) { showMsg('signupMsg', 'Password must be 6+ characters.', 'error'); return; }
+
+      try {
+        const { data, error } = await supabaseClient.auth.signUp({
+          email: email,
+          password: pass,
+          options: {
+            data: {
+              full_name: name,
+            }
+          }
+        });
+
+        if (error) {
+          showMsg('signupMsg', error.message || 'Sign up failed.', 'error');
+        } else {
+          showMsg('signupMsg', '🌼 Account created! You can now log in (verify email if needed).', 'success');
+          setTimeout(() => switchTab('login'), 2500);
+        }
+      } catch (err) {
+        showMsg('signupMsg', 'An unexpected error occurred.', 'error');
+      }
+    }
+
+    // Close on backdrop click
+    overlay.addEventListener('click', closeCard);
+  </script>
 </body>
+
 </html>

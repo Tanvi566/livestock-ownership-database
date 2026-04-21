@@ -1,0 +1,9 @@
+# Python fix/patch scripts (dev-only, not part of the app)
+*.py
+
+# Node
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -12,13 +12,23 @@
 
         /* Reset & Variables */
         :root {
-            --primary-green: #16a34a;
-            --dark-green: #14532d;
-            --bg-gray: #f9fafb;
-            --border-gray: #e5e7eb;
-            --text-main: #111827;
-            --text-muted: #6b7280;
+            --primary-green: #7a9e7e;
+            --dark-green: #4a664d;
+            --bg-gray: transparent;
+            --border-gray: rgba(255, 252, 245, 0.55);
+            --text-main: #3d2b1f;
+            --text-muted: #5a544b;
+            --glass-bg: rgba(255, 252, 245, 0.55);
         }
+        
+        .background-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background-image: url('MDbg.png'); 
+            background-size: cover; background-position: center;
+            opacity: 1; z-index: -10; pointer-events: none;
+            filter: blur(1.5px); transform: scale(1.02);
+        }
+
 
         * {
             box-sizing: border-box;
@@ -59,38 +69,41 @@ html {
         /* Layout Structure */
         .dashboard-wrapper {
             display: flex;
-            min-height: 100vh;
+            height: 100vh;
         }
 
         /* Sidebar Styling */
         #sidebar {
-            position: fixed;
-            width: 288px; /* w-72 */
+            width: 288px;
             height: 100vh;
-            background: white;
-            border-right: 1px solid var(--border-gray);
+            background: linear-gradient(to bottom, rgba(245, 240, 230, 1) 0%, rgba(245, 240, 230, 0.85) 30%, rgba(245, 240, 230, 0) 100%);
+            border-right: none;
             padding: 1.5rem;
             display: flex;
             flex-direction: column;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: margin-left 0.3s ease;
             z-index: 100;
         }
+        #sidebar.collapsed {
+            margin-left: -288px;
+        }
 
-        .sidebar-hidden { transform: translateX(-100%); }
-        .sidebar-active { transform: translateX(0) !important; }
+        
+        
 
         /* Main Content Area */
         main {
             flex: 1;
             width: 100%;
             overflow-x: hidden;
+            overflow-y: auto;
             padding-bottom: 5rem;
         }
 
         /* Responsive Sidebar Logic for Desktop */
         @media (min-width: 1024px) {
             main { margin-left: 0; } /* Set to 288px if you want it permanently open */
-            .sidebar-hidden { transform: translateX(-100%); }
+            
         }
 
         /* Header / Glassmorphism */
@@ -102,9 +115,10 @@ html {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 252, 245, 0.25);
             backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1.5px solid var(--border-gray);
         }
 
         /* Sidebar Navigation */
@@ -136,11 +150,13 @@ html {
         }
 
         .stat-card {
-            background: white;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             padding: 1.5rem;
             border-radius: 2rem;
-            border: 1px solid #f3f4f6;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            border: 1.5px solid var(--border-gray);
+            box-shadow: 0 4px 20px rgba(61, 43, 31, 0.15);
         }
 
         .stat-label { font-size: 0.75rem; font-weight: 700; color: #9ca3af; text-transform: uppercase; }
@@ -157,13 +173,16 @@ html {
         }
 
         .feature-card { 
-            background: white; 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             padding: 25px; 
             border-radius: 24px; 
             transition: 0.3s; 
             cursor: pointer; 
             text-align: center;
-            border: 1px solid transparent;
+            border: 1.5px solid var(--border-gray);
+            box-shadow: 0 4px 20px rgba(61, 43, 31, 0.15);
         }
 
         .feature-card:hover { 
@@ -177,23 +196,17 @@ html {
             margin-bottom: 12px; 
             display: block; 
         }
-.feature-card {
-    /* ... your existing styles ... */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.feature-card:active {
-    transform: scale(0.95); /* Gives a "pressed" feel when clicked */
-}
-        /* Quick Actions */
-        .quick-actions-box {
-            background: white;
-            border-radius: 2.5rem;
-            padding: 2rem;
-            border: 1px solid #f3f4f6;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
+.feature-card { 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 25px; 
+            border-radius: 24px; 
+            transition: 0.3s; 
+            cursor: pointer; 
+            text-align: center;
+            border: 1.5px solid var(--border-gray);
+            box-shadow: 0 4px 20px rgba(61, 43, 31, 0.15);
         }
 
         .action-btn {
@@ -202,17 +215,21 @@ html {
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: #f9fafb;
+            background: rgba(59, 58, 54, 0.88);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            color: white;
             border-radius: 2rem;
-            border: 1px solid transparent;
+            border: none;
             margin-bottom: 1rem;
             padding: 1.5rem;
             cursor: pointer;
             transition: 0.3s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
 
-        .action-btn:hover { background: #eff6ff; border-color: #dbeafe; }
-        .action-btn i { font-size: 1.875rem; margin-bottom: 0.75rem; transition: 0.3s; }
+        .action-btn:hover { background: rgba(45, 44, 41, 0.95); }
+        .action-btn i { font-size: 1.875rem; margin-bottom: 0.75rem; transition: 0.3s; color: white !important; }
         .action-btn:hover i { transform: scale(1.1); }
 
         /* Notifications */
@@ -227,13 +244,16 @@ html {
         #notification-dropdown.active { display: block; }
 
         .promo-card {
-            background: var(--dark-green);
+            background: rgba(74, 102, 77, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1.5px solid rgba(255,255,255,0.2);
             border-radius: 2.5rem;
             padding: 2rem;
             color: white;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 25px 50px -12px rgba(61, 43, 31, 0.3);
         }
 
         /* Utils */
@@ -270,32 +290,31 @@ html {
     </style>
 </head>
 <body>
+    <div class="background-overlay"></div>
 
     <div id="sidebar-overlay" class="overlay"></div>
 
     <div class="dashboard-wrapper">
         
-        <aside id="sidebar" class="sidebar-hidden">
+                <aside id="sidebar">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5rem;">
-                <div style="display: flex; align-items: center; gap: 0.75rem; color: #15803d; font-weight: 700; font-size: 1.5rem;">
-                    <i class="fas fa-microchip"></i> <span>LiveTrack</span>
+                <div style="display: flex; align-items: center; gap: 0.75rem; color: var(--text-dark, #3d2b1f); font-weight: 700; font-size: 1.5rem;">
+                    <i class="fas fa-tractor"></i> <span>FarmTrack</span>
                 </div>
-                <button id="close-sidebar" style="background: none; border: none; color: #9ca3af; cursor: pointer;">
-                    <i class="fas fa-times style='font-size: 1.25rem;'"></i>
-                </button>
             </div>
             
-            <nav style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem;">
-                <a href="farmerDash.html" class="nav-link"><i class="fas fa-chart-pie"></i> Overview</a>
-                <a href="liveStock.html" class="nav-link"><i class="fas fa-cow"></i> My Livestock</a>
-                <a href="health.html" class="nav-link"><i class="fas fa-file-medical"></i>Health Records</a>
-                <a href="schemes.html" class="nav-link"><i class="fas fa-shield-alt"></i> My Subsidies</a>
+            <nav style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem;" class="nav-menu">
+                <a href="MainDash.html" class="nav-link "><i class="fas fa-home"></i> Dashboard</a>
+                <a href="farmerDash.html" class="nav-link active"><i class="fas fa-chart-pie"></i> Overview</a>
+                <a href="liveStock.html" class="nav-link "><i class="fas fa-cow"></i> My Livestock</a>
+                <a href="health.html" class="nav-link "><i class="fas fa-file-medical"></i> Health Records</a>
+                <a href="schemes.html" class="nav-link "><i class="fas fa-shield-alt"></i> My Subsidies</a>
             </nav>
 
-            <div style="padding: 1rem; background: #111827; border-radius: 1.5rem; color: white;">
-                <p style="font-size: 10px; opacity: 0.6; text-transform: uppercase; letter-spacing: 0.1em;">Support</p>
+            <div style="padding: 1rem; background: var(--glass-bg, rgba(255,252,245,0.55)); border-radius: 1.5rem; border: 1.5px solid var(--border-gray, rgba(255,252,245,0.55)); color: var(--text-main, #3d2b1f);">
+                <p style="font-size: 10px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.1em;">Support</p>
                 <p style="font-size: 0.875rem; font-weight: 600; margin-top: 0.25rem;">Need help with registration?</p>
-                <button style="margin-top: 0.75rem; font-size: 0.75rem; background: var(--primary-green); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.75rem; width: 100%; cursor: pointer;">Contact Agent</button>
+                <button style="margin-top: 0.75rem; font-size: 0.75rem; background: var(--dark-green, #4a664d); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.75rem; width: 100%; cursor: pointer;">Contact Agent</button>
             </div>
         </aside>
 
@@ -303,14 +322,14 @@ html {
             <header>
                 <div style="display: flex; align-items: center; gap: 1rem;">
                     <button id="menu-btn" style="padding: 0.5rem; background: none; border: none; cursor: pointer; color: #4b5563;">
-                        <i class="fas fa-ellipsis-v" style="font-size: 1.25rem;"></i>
+                        <i class="fas fa-bars" style="font-size: 1.25rem;"></i>
                     </button>
-                    <div style="color: #064e3b; font-weight: 700; font-size: 1.25rem;">LiveTrack</div>
+                    <div style="color: var(--dark-brown); font-weight: 800; font-size: 1.25rem;">Overview</div>
                 </div>
                 
                 <div style="display: flex; align-items: center; gap: 1rem; position: relative;">
-                    <button id="bell-btn" style="background: none; border: none; position: relative; color: #6b7280; cursor: pointer;">
-                        <i class="far fa-bell" style="font-size: 1.25rem;"></i>
+                    <button id="bell-btn" style="background: none; border: none; position: relative; color: var(--text-main); cursor: pointer;">
+                        <i class="fas fa-bell" style="font-size: 1.2rem;"></i>
                         <span style="position: absolute; top: 2px; right: 2px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%;"></span>
                     </button>
 
@@ -323,8 +342,8 @@ html {
                         </div>
                     </div>
                     <a href="MainDash.html">
-                    <img src="https://ui-avatars.com/api/?name=Farmer+Joe&background=16a34a&color=fff" 
-                         style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--border-gray);" alt="Profile">
+                    <img src="https://ui-avatars.com/api/?name=Farmer+Joe&background=064e3b&color=fff" 
+                         style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--text-main);" alt="Profile">
                     </a>
                 </div>
             </header>
@@ -337,13 +356,13 @@ html {
 
                 <div class="stat-grid reveal">
                     <div class="stat-card"><p class="stat-label">Total Livestock</p><h2 class="stat-value">1,240</h2></div>
-                    <div class="stat-card"><p class="stat-label">Health Index</p><h2 class="stat-value" style="color: #2563eb;">98%</h2></div>
+                    <div class="stat-card"><p class="stat-label">Health Index</p><h2 class="stat-value" >98%</h2></div>
                     <div class="stat-card"><p class="stat-label">Pending Schemes</p><h2 class="stat-value" style="color: #f97316;">03</h2></div>
                     <div class="stat-card"><p class="stat-label">Active Alerts</p><h2 class="stat-value" style="color: #ef4444;">00</h2></div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-                    <div style="grid-column: span 2; background: white; border-radius: 2.5rem; border: 1px solid #f3f4f6; overflow: hidden;">
+                    <div style="grid-column: span 2; background: var(--glass-bg); border-radius: 2.5rem; border: 1.5px solid var(--border-gray); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); box-shadow: 0 4px 20px rgba(61, 43, 31, 0.15); overflow: hidden;">
                         <div style="padding: 1.5rem; border-bottom: 1px solid #f9fafb; display: flex; justify-content: space-between; align-items: center;">
                             <h3 style="font-weight: 700; font-size: 1.125rem;">Animal Inventory</h3>
                             <button style="background: none; border: none; color: var(--primary-green); font-weight: 700; cursor: pointer;">See All</button>
@@ -355,13 +374,13 @@ html {
                     <div class="quick-actions-box reveal">
     <h3 style="font-weight: 700; margin-bottom: 1.5rem; font-size: 1.125rem;">Quick Actions</h3>
     
-    <div class="action-btn" onclick="downloadPDF()" style="border: 1px solid #fed7aa66;">
-    <i class="fas fa-file-chart-column" style="color: #ea580c;"></i>
+    <div class="action-btn" onclick="downloadPDF()" >
+    <i class="fas fa-file-export" ></i>
     <span style="font-size: 0.875rem; font-weight: 700;">Export Report</span>
 </div>
 
-    <div class="action-btn" onclick="window.location.href='vaccination.html'" style="border: 1px solid #bfdbfe66;">
-        <i class="fas fa-syringe" style="color: #2563eb;"></i>
+    <div class="action-btn" onclick="window.location.href='vaccination.html'" >
+        <i class="fas fa-syringe" ></i>
         <span style="font-size: 0.875rem; font-weight: 700;">Log Vaccination</span>
     </div>
 </div>
@@ -405,16 +424,14 @@ html {
         const menuBtn = document.getElementById('menu-btn');
         const closeBtn = document.getElementById('close-sidebar');
         const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebar-overlay');
+        // Overlay removed since it's a push sidebar now
 
         function toggleSidebar() {
-            sidebar.classList.toggle('sidebar-active');
-            overlay.classList.toggle('active');
+            sidebar.classList.toggle('collapsed');
         }
 
         menuBtn.addEventListener('click', toggleSidebar);
-        closeBtn.addEventListener('click', toggleSidebar);
-        overlay.addEventListener('click', toggleSidebar);
+        if (closeBtn) closeBtn.addEventListener('click', toggleSidebar);
 
         // Notifications
         const bellBtn = document.getElementById('bell-btn');
@@ -432,7 +449,7 @@ html {
                 container.innerHTML = animalData.map(item => `
                     <div style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: #f9fafb; border-radius: 1rem; margin-bottom: 1rem;">
                         <div style="display: flex; align-items: center; gap: 1rem;">
-                            <div style="width: 40px; height: 40px; background: white; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; color: #16a34a; border: 1px solid #f3f4f6;">
+                            <div style="width: 40px; height: 40px; background: var(--glass-bg); border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; color: #16a34a; border: 1px solid #f3f4f6;">
                                 <i class="fas fa-tag" style="font-size: 10px;"></i>
                             </div>
                             <div>
