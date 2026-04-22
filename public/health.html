@@ -305,28 +305,43 @@
         .badge-orange { background: #ffedd5; color: #c2410c; }
         .badge-yellow { background: #fef9c3; color: #a16207; }
 
-        /* ── Notification ── */
-        #notification-dropdown {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 55px;
-            width: 320px;
-            z-index: 100;
-        }
-        #notification-dropdown.active { display: block; }
-        .promo-card {
-            background: rgba(74, 102, 77, 0.8);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1.5px solid rgba(255,255,255,0.2);
-            border-radius: 2.5rem;
-            padding: 2rem;
-            color: white;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(61, 43, 31, 0.3);
-        }
+      .notification-dropdown {
+    position: absolute;
+    top: 0px;
+    right: 1.5rem;
+    width: 300px;
+    background: var(--card-bg);
+    backdrop-filter: blur(15px);
+    border: 1.5px solid var(--glass-border);
+    border-radius: 1.5rem;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    display: none;
+    z-index: 1000;
+    padding: 1.5rem;
+}
+
+.notification-dropdown.active { display: block; }
+
+.notification-item {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.notification-item:last-child { border: none; }
+
+.notif-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+
 
         /* ── Animate Load ── */
         .animate-load {
@@ -411,11 +426,15 @@
                 <a href="schemes.html" class="nav-link "><i class="fas fa-shield-alt"></i> My Subsidies</a>
             </nav>
 
-            <div style="padding: 1rem; background: var(--glass-bg, rgba(255,252,245,0.55)); border-radius: 1.5rem; border: 1.5px solid var(--border-gray, rgba(255,252,245,0.55)); color: var(--text-main, #3d2b1f);">
-                <p style="font-size: 10px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.1em;">Support</p>
-                <p style="font-size: 0.875rem; font-weight: 600; margin-top: 0.25rem;">Need help with registration?</p>
-                <button style="margin-top: 0.75rem; font-size: 0.75rem; background: var(--dark-green, #4a664d); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.75rem; width: 100%; cursor: pointer;">Contact Agent</button>
-            </div>
+          <div id="support-container" style="padding: 1rem; background: var(--glass-bg, rgba(255,252,245,0.55)); border-radius: 1.5rem; border: 1.5px solid var(--border-gray, rgba(255,252,245,0.55)); color: var(--text-main, #3d2b1f);">
+    <p style="font-size: 10px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.1em;">Support</p>
+    <p style="font-size: 0.875rem; font-weight: 600; margin-top: 0.25rem;">Need help with registration?</p>
+    
+    <div id="support-content">
+        <button onclick="showSupportInfo()" style="margin-top: 0.75rem; font-size: 0.75rem; background: var(--dark-green, #4a664d); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.75rem; width: 100%; cursor: pointer;">
+            Contact Agent
+        </button>
+    </div>
         </aside>
 
         <!-- ── MAIN ── -->
@@ -429,19 +448,31 @@
                 </div>
 
                 <div style="display: flex; align-items: center; gap: 1rem; position: relative;">
-                    <button id="bell-btn" style="background: none; border: none; position: relative; color: var(--text-main); cursor: pointer;">
-                        <i class="fas fa-bell" style="font-size: 1.2rem;"></i>
-                        <span style="position: absolute; top: 2px; right: 2px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%;"></span>
-                    </button>
-
-                    <div id="notification-dropdown">
-                        <div class="promo-card">
-                            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Gov. Subsidies</h3>
-                            <p style="font-size: 0.875rem; opacity: 0.8; margin-bottom: 1.5rem;">You have 2 eligible schemes for cattle insurance.</p>
-                            <button style="width: 100%; background: white; color: #064e3b; padding: 0.75rem; border: none; border-radius: 1rem; font-weight: 700; cursor: pointer;">Apply Now</button>
-                            <i class="fas fa-award" style="position: absolute; bottom: -1rem; right: -1rem; font-size: 5rem; opacity: 0.1;"></i>
-                        </div>
-                    </div>
+                     <div style="display: flex; align-items: center; gap: 1rem; position: relative;">
+                    <div style="display: flex; align-items: center; gap: 1rem; position: relative;">
+    <button id="bell-btn" style="background: none; border: none; position: relative; color: var(--text-dark); cursor: pointer;">
+        <i class="fas fa-bell" style="font-size: 1.2rem;"></i>
+        <span id="notif-dot" style="position: absolute; top: 2px; right: 2px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%;"></span>
+    </button>
+    
+    <div id="notif-dropdown" class="notification-dropdown">
+        <h4 style="margin-bottom: 1rem; font-size: 0.9rem;">Alerts & Tasks</h4>
+        <div class="notification-item">
+            <div class="notif-icon" style="background: #fee2e2; color: #ef4444;"><i class="fas fa-syringe"></i></div>
+            <div>
+                <p style="font-size: 0.8rem; font-weight: 700;">Vaccination Pending</p>
+                <p style="font-size: 0.7rem; opacity: 0.7;">Cow #ID-442: FMD Booster</p>
+            </div>
+        </div>
+        <div class="notification-item">
+            <div class="notif-icon" style="background: #fef3c7; color: #d97706;"><i class="fas fa-file-invoice-dollar"></i></div>
+            <div>
+                <p style="font-size: 0.8rem; font-weight: 700;">Scheme Update</p>
+                <p style="font-size: 0.7rem; opacity: 0.7;">Subsidy application approved.</p>
+            </div>
+        </div>
+    </div>
+    </div>
 
                     <a href="MainDash.html">
                         <img src="https://ui-avatars.com/api/?name=Farmer+Joe&background=064e3b&color=fff"
@@ -617,12 +648,20 @@
 
         // ── Notifications ──
         const bellBtn = document.getElementById('bell-btn');
-        const dropdown = document.getElementById('notification-dropdown');
-        bellBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdown.classList.toggle('active');
-        });
-        document.addEventListener('click', () => { dropdown.classList.remove('active'); });
+    const notifDropdown = document.getElementById('notif-dropdown');
+    const notifDot = document.getElementById('notif-dot');
+
+    bellBtn.addEventListener('click', (e) => {
+        notifDropdown.classList.toggle('active');
+        notifDot.style.display = 'none'; // Clear the red dot once seen
+        e.stopPropagation();
+    });
+
+    // Close dropdown when clicking elsewhere
+    window.addEventListener('click', () => {
+        notifDropdown.classList.remove('active');
+    });
+
 
         // ── Health Line Chart ──
         const ctx = document.getElementById('healthLineChart').getContext('2d');
@@ -676,7 +715,31 @@
                 }
             }
         });
+function showSupportInfo() {
+    const container = document.getElementById('support-content');
+    container.innerHTML = `
+        <div style="margin-top: 0.75rem; font-size: 0.8rem; background: rgba(255,255,255,0.4); padding: 0.5rem; border-radius: 0.5rem; border: 1px solid rgba(74, 102, 77, 0.2);">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                <span style="color: #4a664d;">📞</span>
+                <span style="font-weight: 600;">+91 1800-444-5555</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="color: #4a664d;">📧</span>
+                <span style="font-size: 0.75rem;">support@livetrack.gov.in</span>
+            </div>
+            <button onclick="hideSupportInfo()" style="margin-top: 8px; background: transparent; border: none; color: #4a664d; font-size: 0.7rem; text-decoration: underline; cursor: pointer; padding: 0;">Close</button>
+        </div>
+    `;
+}
 
+function hideSupportInfo() {
+    const container = document.getElementById('support-content');
+    container.innerHTML = `
+        <button onclick="showSupportInfo()" style="margin-top: 0.75rem; font-size: 0.75rem; background: var(--dark-green, #4a664d); color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.75rem; width: 100%; cursor: pointer;">
+            Contact Agent
+        </button>
+    `;
+}
         // ── Scroll Reveal Animations ──
         function initAnimations() {
             const observerOptions = {
